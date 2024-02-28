@@ -5,19 +5,18 @@ import {
   Button,
   MenuItem,
   Box,
-  ThemeProvider,
+  FormControl,
+  InputLabel,
+  Select,
+  Checkbox,
+  OutlinedInput,
+  ListItemText,
 } from '@mui/material';
-import { Order, OrderType } from '../types';
-import { theme } from '../Style/Theme';
-// import { Search } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
+import { SelectChangeEvent } from '@mui/material/Select';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Checkbox from '@mui/material/Checkbox';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import ListItemText from '@mui/material/ListItemText';
+import CreateOrderModal from '../Components/CreateOrderModal';
+import { OrderType } from '../types';
 
 interface FilterBarProps {
   ordersId: string[];
@@ -26,6 +25,7 @@ interface FilterBarProps {
   onDeleteSelected: () => void;
   onOrderTypeChange: (type: OrderType) => void;
 }
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -45,83 +45,90 @@ const FilterBar = ({
   onOrderTypeChange,
 }: FilterBarProps) => {
   const [selectedOrderType, setSelectedOrderType] = useState<OrderType[]>([]);
+  const [openCreateModal, setOpenCreateModal] = useState(false);
 
   const handleChange = (event: SelectChangeEvent<string | string[]>) => {
     const { value } = event.target;
     setSelectedOrderType(
-      Array.isArray(value)
-        ? value.map((type) => type as OrderType)
-        : [value as OrderType]
+      Array.isArray(value) ? (value as OrderType[]) : [value as OrderType]
     );
   };
 
+  const handleCreateOrder = () => {
+    setOpenCreateModal(true);
+  };
+
+  const handleCloseCreateModal = () => {
+    setOpenCreateModal(false);
+  };
+
   return (
-    <ThemeProvider theme={theme}>
-      <Box
-        sx={{
-          paddingLeft: 1,
-          paddingRight: 1,
-          display: 'flex',
-          justifyContent: 'space-evenly',
-          flexWrap: 'wrap',
-          marginBottom: 5,
-        }}
+    <Box
+      sx={{
+        paddingLeft: 1,
+        paddingRight: 1,
+        display: 'flex',
+        justifyContent: 'space-evenly',
+        flexWrap: 'wrap',
+        marginBottom: 5,
+      }}
+    >
+      <Autocomplete
+        disablePortal
+        id="order-search-by-id"
+        options={ordersId}
+        sx={{ width: 300 }}
+        renderInput={(params) => (
+          <TextField {...params} label="Customer Search" />
+        )}
+      />
+      <CreateOrderModal
+        open={openCreateModal}
+        onClose={handleCloseCreateModal}
+        // function to submit
+        onSubmit={() => console.log('submit')}
+      />
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleCreateOrder}
+        style={{ width: 200 }}
       >
-        <Autocomplete
-          disablePortal
-          id="combo-box-demo"
-          options={ordersId}
-          sx={{ width: 300 }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Customer Search"
-              // inputProps={{ ...params.InputProps, startAdornment: <Search /> }}
-            />
-          )}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={onCreateOrder}
-          style={{ width: 200 }}
+        <AddIcon style={{ padding: 5 }} />
+        Create Order
+      </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={onDeleteSelected}
+        style={{ width: 200 }}
+      >
+        <DeleteOutlineIcon style={{ padding: 5 }} />
+        Delete Selected
+      </Button>
+      <FormControl sx={{ m: 1, width: 300 }}>
+        <InputLabel id="order-type-label">Order Type</InputLabel>
+        <Select
+          labelId="order-type-label"
+          id="order-type-checkbox"
+          multiple
+          value={selectedOrderType}
+          onChange={handleChange}
+          input={<OutlinedInput label="Order Type" />}
+          renderValue={(selected) =>
+            Array.isArray(selected) ? selected.join(', ') : selected
+          }
+          MenuProps={MenuProps}
         >
-          <AddIcon style={{ padding: 5 }} />
-          Create Order
-        </Button>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={onDeleteSelected}
-          style={{ width: 200 }}
-        >
-          <DeleteOutlineIcon style={{ padding: 5 }} />
-          Delete Selected
-        </Button>
-        <FormControl sx={{ m: 1, width: 300 }}>
-          <InputLabel id="demo-multiple-checkbox-label">Tag</InputLabel>
-          <Select
-            labelId="demo-multiple-checkbox-label"
-            id="demo-multiple-checkbox"
-            multiple
-            value={selectedOrderType}
-            onChange={handleChange}
-            input={<OutlinedInput label="Tag" />}
-            renderValue={(selected) =>
-              Array.isArray(selected) ? selected.join(', ') : selected
-            }
-            MenuProps={MenuProps}
-          >
-            {orderTypes.map((type) => (
-              <MenuItem key={type} value={type}>
-                <Checkbox checked={selectedOrderType.indexOf(type) > -1} />
-                <ListItemText primary={type} />
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
-    </ThemeProvider>
+          {orderTypes.map((type) => (
+            <MenuItem key={type} value={type}>
+              <Checkbox checked={selectedOrderType.indexOf(type) > -1} />
+              <ListItemText primary={type} />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
   );
 };
 

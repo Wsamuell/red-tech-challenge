@@ -1,5 +1,7 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Order } from '../types';
+import EditIcon from '@mui/icons-material/Edit';
+// import EditOrderModal from '../Components/EditOrderModal';
 
 const columns: GridColDef[] = [
   {
@@ -32,6 +34,20 @@ const columns: GridColDef[] = [
     headerName: 'Customer',
     width: 160,
   },
+  {
+    field: 'edit',
+    headerName: '',
+    width: 50,
+    sortable: false,
+    disableColumnMenu: true,
+    renderCell: (params) => (
+      <EditIcon
+        style={{ color: '#444444' }}
+        className="edit-icon"
+        onClick={() => console.log('click')}
+      />
+    ),
+  },
 ];
 
 interface DataTableProps {
@@ -43,7 +59,7 @@ const DataTable = ({ orders }: DataTableProps) => {
   return (
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid
-        getRowId={getRowId} // Provide a function to extract the id from each row
+        getRowId={getRowId}
         rows={orders}
         columns={columns}
         initialState={{
