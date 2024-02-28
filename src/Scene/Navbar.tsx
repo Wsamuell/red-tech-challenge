@@ -6,7 +6,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from '../Style/Theme';
 
-export default function NavBar() {
+const NavBar = () => {
   return (
     <ThemeProvider theme={theme}>
       <AppBar
@@ -15,6 +15,7 @@ export default function NavBar() {
         style={{
           boxShadow: 'none',
           borderBottom: `2px solid #e0e0e0`,
+          marginBottom: 10,
         }}
       >
         <Toolbar variant="dense" style={{ paddingLeft: 10, paddingRight: 10 }}>
@@ -42,4 +43,6 @@ export default function NavBar() {
       </AppBar>
     </ThemeProvider>
   );
-}
+};
+
+export default NavBar;
