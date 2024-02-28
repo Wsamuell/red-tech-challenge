@@ -9,8 +9,15 @@ import { theme } from '../Style/Theme';
 export default function NavBar() {
   return (
     <ThemeProvider theme={theme}>
-      <AppBar position="static" color="primary">
-        <Toolbar variant="dense">
+      <AppBar
+        position="static"
+        color="primary"
+        style={{
+          boxShadow: 'none',
+          borderBottom: `2px solid #e0e0e0`,
+        }}
+      >
+        <Toolbar variant="dense" style={{ paddingLeft: 10, paddingRight: 10 }}>
           <IconButton
             edge="start"
             color="inherit"
@@ -18,6 +25,8 @@ export default function NavBar() {
             sx={{ mr: 1 }}
           >
             <MenuIcon />
+
+            {/* Replace this icon with Red-tech logo if you can find a PNG */}
           </IconButton>
           <Typography variant="h6" color="inherit" component="div">
             Home
