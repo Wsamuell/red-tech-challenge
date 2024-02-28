@@ -7,6 +7,7 @@ import { fetchAllOrders } from './Api-Data';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
+import DataTable from './Scene/OrderTable';
 
 function App() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -44,16 +45,19 @@ function App() {
           Error Loading Dashboard, Please contact Engineering!
         </Alert>
       ) : (
-        <FilterBar
-          // there is a strong posibility we can have multiple people with the same name so there is going to be a displayed search for multiple users with the same name, this is going to get confusing so we should order Id instead
-          orders={orders.map((order) => order.customerName)}
-          orderTypes={[
-            ...new Set(orders.map((order) => order.orderType as OrderType)),
-          ]}
-          onCreateOrder={() => console.log('')}
-          onDeleteSelected={() => console.log('')}
-          onOrderTypeChange={() => console.log('')}
-        />
+        <div>
+          <FilterBar
+            // there is a strong posibility we can have multiple people with the same name so there is going to be a displayed search for multiple users with the same name, this is going to get confusing so we should order Id instead
+            ordersId={orders.map((order) => order.orderId)}
+            orderTypes={[
+              ...new Set(orders.map((order) => order.orderType as OrderType)),
+            ]}
+            onCreateOrder={() => console.log('')}
+            onDeleteSelected={() => console.log('')}
+            onOrderTypeChange={() => console.log('')}
+          />
+          <DataTable orders={orders} />
+        </div>
       )}
     </div>
   );

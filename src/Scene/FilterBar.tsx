@@ -7,7 +7,7 @@ import {
   Box,
   ThemeProvider,
 } from '@mui/material';
-import { OrderType } from '../types';
+import { Order, OrderType } from '../types';
 import { theme } from '../Style/Theme';
 // import { Search } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
@@ -20,7 +20,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import ListItemText from '@mui/material/ListItemText';
 
 interface FilterBarProps {
-  orders: string[];
+  ordersId: string[];
   orderTypes: OrderType[];
   onCreateOrder: () => void;
   onDeleteSelected: () => void;
@@ -38,7 +38,7 @@ const MenuProps = {
 };
 
 const FilterBar = ({
-  orders,
+  ordersId,
   orderTypes,
   onCreateOrder,
   onDeleteSelected,
@@ -64,12 +64,13 @@ const FilterBar = ({
           display: 'flex',
           justifyContent: 'space-evenly',
           flexWrap: 'wrap',
+          marginBottom: 5,
         }}
       >
         <Autocomplete
           disablePortal
           id="combo-box-demo"
-          options={orders}
+          options={ordersId}
           sx={{ width: 300 }}
           renderInput={(params) => (
             <TextField
