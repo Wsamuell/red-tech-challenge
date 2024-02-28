@@ -6,6 +6,13 @@ export type Order = {
   orderType: string;
 };
 
+export type NewOrder = {
+  createdByUserName: string;
+  createdDate: string;
+  customerName: string;
+  orderType: string;
+};
+
 export enum OrderType {
   PurchaseOrder = 'Purchase',
   ReturnOrder = ' Return',
