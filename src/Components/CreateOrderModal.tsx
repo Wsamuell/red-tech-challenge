@@ -64,6 +64,7 @@ const CreateOrderModal = ({
         orderType: '',
       });
       fetchData(); // Refetch data after adding a new order
+      onClose(); // close the modal on completion
     } catch (err) {
       throw new Error(`Couldnt Add Order: ${err}`);
     }

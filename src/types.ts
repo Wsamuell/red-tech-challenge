@@ -1,10 +1,25 @@
 export enum OrderType {
-  PurchaseOrder = 'Purchase',
-  ReturnOrder = ' Return',
-  SaleOrder = 'Sale',
+  PurchaseOrder = 'PurchaseOrder',
+  ReturnOrder = ' ReturnOrder',
+  SaleOrder = 'SaleOrder',
   Standard = 'Standard',
-  TransferOrder = ' Transfer',
+  TransferOrder = ' TransferOrder',
 }
+
+export const orderTypetoString = (orderType: OrderType): String => {
+  switch (orderType) {
+    case OrderType.PurchaseOrder:
+      return 'Purchase';
+    case OrderType.TransferOrder:
+      return 'Transfer';
+    case OrderType.ReturnOrder:
+      return 'ReturnOrder';
+    case OrderType.SaleOrder:
+      return 'Sale';
+    case OrderType.Standard:
+      return 'Standard';
+  }
+};
 
 export type Order = {
   createdByUserName: string;
