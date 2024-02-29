@@ -8,7 +8,6 @@ export type Order = {
 
 export type NewOrder = {
   createdByUserName: string;
-  createdDate: string;
   customerName: string;
   orderType: string;
 };

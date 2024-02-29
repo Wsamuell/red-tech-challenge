@@ -1,6 +1,12 @@
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import {
+  DataGrid,
+  GridCallbackDetails,
+  GridColDef,
+  GridRowSelectionModel,
+} from '@mui/x-data-grid';
 import { Order } from '../types';
 import EditIcon from '@mui/icons-material/Edit';
+import { useState } from 'react';
 // import EditOrderModal from '../Components/EditOrderModal';
 
 const columns: GridColDef[] = [
@@ -52,9 +58,20 @@ const columns: GridColDef[] = [
 
 interface DataTableProps {
   orders: Order[];
+  onSelectedRowsChange: (selectedRows: string[]) => void;
 }
-const DataTable = ({ orders }: DataTableProps) => {
+
+const DataTable = ({ orders, onSelectedRowsChange }: DataTableProps) => {
   const getRowId = (row: Order) => row.orderId;
+
+  const handleSelectionChange = (
+    newSelection: GridRowSelectionModel,
+    details: GridCallbackDetails<any>
+  ) => {
+    // Extract order IDs from newSelection and update state
+    const selectedOrderIds = newSelection.map((rowId) => rowId.toString());
+    onSelectedRowsChange(selectedOrderIds);
+  };
 
   return (
     <div style={{ height: 400, width: '100%' }}>
@@ -67,6 +84,7 @@ const DataTable = ({ orders }: DataTableProps) => {
             paginationModel: { page: 0, pageSize: 10 },
           },
         }}
+        onRowSelectionModelChange={handleSelectionChange}
         pageSizeOptions={[5, 10]}
         checkboxSelection
       />

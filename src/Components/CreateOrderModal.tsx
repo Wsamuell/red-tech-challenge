@@ -9,8 +9,9 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { SelectChangeEvent, OutlinedInput } from '@mui/material/';
-import { OrderType } from '../types';
+import { NewOrder, OrderType } from '../types';
 import CloseIcon from '@mui/icons-material/Close';
+import { addNewOrder } from '../Client';
 
 const style = {
   position: 'absolute',
@@ -26,23 +27,12 @@ const style = {
 interface CreateOrderModalProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: OrderFormData) => void;
 }
 
-interface OrderFormData {
-  fullName: string;
-  createdBy: string;
-  orderType: string;
-}
-
-const CreateOrderModal = ({
-  open,
-  onClose,
-  onSubmit,
-}: CreateOrderModalProps) => {
-  const [formData, setFormData] = useState<OrderFormData>({
-    fullName: '',
-    createdBy: '',
+const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
+  const [formData, setFormData] = useState<NewOrder>({
+    createdByUserName: '',
+    customerName: '',
     orderType: '',
   });
 
@@ -60,8 +50,13 @@ const CreateOrderModal = ({
     setFormData({ ...formData, [name as string]: value as string });
   };
 
-  const handleOrderSubmit = () => {
-    onSubmit(formData);
+  const handleOrderSubmit = async () => {
+    try {
+      console.log(formData);
+      await addNewOrder(formData);
+    } catch (error) {
+      console.error('Error adding new order:', error);
+    }
   };
 
   return (
@@ -73,22 +68,22 @@ const CreateOrderModal = ({
         aria-describedby="modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-title" variant="h6" component="h2">
+          <Typography id="modal-title" variant="h6" component="h3">
             Create New Order
           </Typography>
           <FormControl fullWidth sx={{ mt: 2 }}>
             <TextField
               label="Full Name"
-              name="fullName"
-              value={formData.fullName}
+              name="customerName"
+              value={formData.customerName}
               onChange={handleTextFieldChange}
             />
           </FormControl>
           <FormControl fullWidth sx={{ mt: 2 }}>
             <TextField
               label="Created By"
-              name="createdBy"
-              value={formData.createdBy}
+              name="createdByUserName"
+              value={formData.createdByUserName}
               onChange={handleTextFieldChange}
             />
           </FormControl>
@@ -124,15 +119,15 @@ const CreateOrderModal = ({
             onClick={handleOrderSubmit}
             sx={{ mt: 2 }}
           >
-            Submit
+            Submit Order
           </Button>
           <Button
             color="inherit"
             onClick={() => {
               onClose();
               setFormData({
-                fullName: '',
-                createdBy: '',
+                customerName: '',
+                createdByUserName: '',
                 orderType: '',
               });
             }}

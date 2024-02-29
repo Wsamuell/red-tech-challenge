@@ -85,8 +85,6 @@ const FilterBar = ({
       <CreateOrderModal
         open={openCreateModal}
         onClose={handleCloseCreateModal}
-        // function to submit
-        onSubmit={() => console.log('submit')}
       />
       <Button
         variant="contained"
