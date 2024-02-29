@@ -23,7 +23,6 @@ const NavBar = () => {
           sx={{ mr: 1 }}
         >
           <MenuIcon />
-
           {/* Replace this icon with Red-tech logo if you can find a PNG */}
         </IconButton>
         <Typography variant="h6" color="inherit" component="div">

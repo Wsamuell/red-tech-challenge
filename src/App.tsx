@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import FilterBar from './Scene/FilterBar';
 import Navbar from './Scene/Navbar';
-import { NewOrder, Order, OrderType } from './types';
-import { addNewOrder, deleteOrder, fetchAllOrders } from './Client';
+import { Order, OrderType } from './types';
+import { deleteOrder, fetchAllOrders, updateOrder } from './Client';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
@@ -17,7 +17,6 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
-  const [newOrder, setNewUpdate] = useState<NewOrder>();
 
   const fetchData = async () => {
     try {
@@ -62,6 +61,16 @@ function App() {
       setFilteredOrders(filtered);
     }
   };
+  const handleSaveChanges = async (updatedRow: Order) => {
+    try {
+      await updateOrder(updatedRow);
+      // Refetch data after updating
+      // actually might be smart to use state here, one down side might be the re order on fetch
+      fetchData();
+    } catch (err) {
+      setError(`Could not save changes: ${err}`);
+    }
+  };
 
   return (
     <div className="App">
@@ -82,7 +91,6 @@ function App() {
         ) : (
           <div>
             <FilterBar
-              // orders={orders}
               ordersId={orders.map((order) => order.orderId)}
               orderTypes={[
                 ...new Set(orders.map((order) => order.orderType as OrderType)),
@@ -93,7 +101,9 @@ function App() {
             />
             <DataTable
               orders={filteredOrders}
+              orderTypes={Object.values(OrderType)}
               onSelectedRowsChange={handleSelectedRowsChange}
+              onSaveChanges={handleSaveChanges}
             />
           </div>
         )}
