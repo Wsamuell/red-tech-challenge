@@ -27,9 +27,14 @@ const style = {
 interface CreateOrderModalProps {
   open: boolean;
   onClose: () => void;
+  fetchData: () => Promise<void>;
 }
 
-const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
+const CreateOrderModal = ({
+  open,
+  onClose,
+  fetchData,
+}: CreateOrderModalProps) => {
   const [formData, setFormData] = useState<NewOrder>({
     createdByUserName: '',
     customerName: '',
@@ -52,10 +57,15 @@ const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
 
   const handleOrderSubmit = async () => {
     try {
-      console.log(formData);
       await addNewOrder(formData);
-    } catch (error) {
-      console.error('Error adding new order:', error);
+      setFormData({
+        customerName: '',
+        createdByUserName: '',
+        orderType: '',
+      });
+      fetchData(); // Refetch data after adding a new order
+    } catch (err) {
+      throw new Error(`Couldnt Add Order: ${err}`);
     }
   };
 

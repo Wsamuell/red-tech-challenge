@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import FilterBar from './Scene/FilterBar';
 import Navbar from './Scene/Navbar';
-import { Order, OrderType } from './types';
-import { deleteOrder, fetchAllOrders } from './Client';
+import { NewOrder, Order, OrderType } from './types';
+import { addNewOrder, deleteOrder, fetchAllOrders } from './Client';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
@@ -17,6 +17,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
+  const [newOrder, setNewUpdate] = useState<NewOrder>();
 
   const fetchData = async () => {
     try {
@@ -45,13 +46,12 @@ function App() {
       // i think this is the best approach in terms of showing updates to deleted data rather than using state in this case, i say so because i could easily remove it from the array of orders but when i go to add a new order the same problem will occur and i wont have the order id to update state
       fetchData(); // Refetch data after deletion
     } catch (err) {
-      console.log('Couldnt Delete Order', err);
+      throw new Error(`Couldnt Delete Order: ${err}`);
     }
   };
 
   const handleOrderTypeChange = (selectedTypes: OrderType[]) => {
     if (selectedTypes.length === 0) {
-      console.log(selectedTypes);
       // If no types are selected, display all orders
       setFilteredOrders(orders);
     } else {
@@ -82,13 +82,14 @@ function App() {
         ) : (
           <div>
             <FilterBar
+              // orders={orders}
               ordersId={orders.map((order) => order.orderId)}
               orderTypes={[
                 ...new Set(orders.map((order) => order.orderType as OrderType)),
               ]}
-              onCreateOrder={() => console.log('')}
               onDeleteSelected={handleOrderDelete}
               onOrderTypeChange={handleOrderTypeChange}
+              fetchData={fetchData}
             />
             <DataTable
               orders={filteredOrders}

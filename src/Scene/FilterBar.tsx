@@ -21,9 +21,9 @@ import { OrderType } from '../types';
 interface FilterBarProps {
   ordersId: string[];
   orderTypes: OrderType[];
-  onCreateOrder: () => void;
   onDeleteSelected: () => void;
   onOrderTypeChange: (type: OrderType[]) => void;
+  fetchData: () => Promise<void>;
 }
 
 const ITEM_HEIGHT = 48;
@@ -40,9 +40,9 @@ const MenuProps = {
 const FilterBar = ({
   ordersId,
   orderTypes,
-  onCreateOrder,
   onDeleteSelected,
   onOrderTypeChange,
+  fetchData,
 }: FilterBarProps) => {
   const [selectedOrderType, setSelectedOrderType] = useState<OrderType[]>([]);
   const [openCreateModal, setOpenCreateModal] = useState(false);
@@ -85,6 +85,7 @@ const FilterBar = ({
       <CreateOrderModal
         open={openCreateModal}
         onClose={handleCloseCreateModal}
+        fetchData={fetchData}
       />
       <Button
         variant="contained"

@@ -53,7 +53,24 @@ export const fetchAllOrders = async () => {
 };
 
 export const addNewOrder = async (order: NewOrder) => {
-  return fetchData('/api/Orders', 'POST', order);
+  try {
+    const response = await fetch(`${REACT_APP_URL}/api/Orders/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ApiKey: REACT_APP_API_KEY!,
+      },
+      body: JSON.stringify(order),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch data. Status: ${response.status}: ${response.statusText}`
+      );
+    }
+  } catch (error: any) {
+    throw new Error(`Failed to fetch data: ${error.message}`);
+  }
 };
 
 export const updateOrder = async (order: Order) => {
