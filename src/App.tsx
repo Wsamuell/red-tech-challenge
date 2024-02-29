@@ -16,11 +16,13 @@ function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
 
   const fetchData = async () => {
     try {
       const response = await fetchAllOrders();
       setOrders(response);
+      setFilteredOrders(response); // Initially, display all orders
     } catch (error) {
       setError('Error fetching orders. Please try again later.');
     } finally {
@@ -38,13 +40,26 @@ function App() {
 
   const handleOrderDelete = async () => {
     try {
-      console.log('you clicked me');
       await deleteOrder(selectedRows);
       setSelectedRows([]);
       // i think this is the best approach in terms of showing updates to deleted data rather than using state in this case, i say so because i could easily remove it from the array of orders but when i go to add a new order the same problem will occur and i wont have the order id to update state
       fetchData(); // Refetch data after deletion
     } catch (err) {
       console.log('Couldnt Delete Order', err);
+    }
+  };
+
+  const handleOrderTypeChange = (selectedTypes: OrderType[]) => {
+    if (selectedTypes.length === 0) {
+      console.log(selectedTypes);
+      // If no types are selected, display all orders
+      setFilteredOrders(orders);
+    } else {
+      // Filter orders based on selected types
+      const filtered = orders.filter((order) =>
+        selectedTypes.includes(order.orderType)
+      );
+      setFilteredOrders(filtered);
     }
   };
 
@@ -73,10 +88,10 @@ function App() {
               ]}
               onCreateOrder={() => console.log('')}
               onDeleteSelected={handleOrderDelete}
-              onOrderTypeChange={() => console.log('')}
+              onOrderTypeChange={handleOrderTypeChange}
             />
             <DataTable
-              orders={orders}
+              orders={filteredOrders}
               onSelectedRowsChange={handleSelectedRowsChange}
             />
           </div>

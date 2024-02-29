@@ -1,17 +1,3 @@
-export type Order = {
-  createdByUserName: string;
-  createdDate: string;
-  customerName: string;
-  orderId: string;
-  orderType: string;
-};
-
-export type NewOrder = {
-  createdByUserName: string;
-  customerName: string;
-  orderType: string;
-};
-
 export enum OrderType {
   PurchaseOrder = 'Purchase',
   ReturnOrder = ' Return',
@@ -19,3 +5,17 @@ export enum OrderType {
   Standard = 'Standard',
   TransferOrder = ' Transfer',
 }
+
+export type Order = {
+  createdByUserName: string;
+  createdDate: string;
+  customerName: string;
+  orderId: string;
+  orderType: OrderType;
+};
+
+export type NewOrder = {
+  createdByUserName: string;
+  customerName: string;
+  orderType: string;
+};

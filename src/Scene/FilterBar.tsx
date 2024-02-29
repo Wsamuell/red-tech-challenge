@@ -23,7 +23,7 @@ interface FilterBarProps {
   orderTypes: OrderType[];
   onCreateOrder: () => void;
   onDeleteSelected: () => void;
-  onOrderTypeChange: (type: OrderType) => void;
+  onOrderTypeChange: (type: OrderType[]) => void;
 }
 
 const ITEM_HEIGHT = 48;
@@ -47,11 +47,11 @@ const FilterBar = ({
   const [selectedOrderType, setSelectedOrderType] = useState<OrderType[]>([]);
   const [openCreateModal, setOpenCreateModal] = useState(false);
 
-  const handleChange = (event: SelectChangeEvent<string | string[]>) => {
+  const handleChange = (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
-    setSelectedOrderType(
-      Array.isArray(value) ? (value as OrderType[]) : [value as OrderType]
-    );
+    // feels a little redundant to do this twice so i'm going to fix this with redux later
+    setSelectedOrderType(value as OrderType[]);
+    onOrderTypeChange(value as OrderType[]);
   };
 
   const handleCreateOrder = () => {
@@ -106,6 +106,7 @@ const FilterBar = ({
       </Button>
       <FormControl sx={{ m: 1, width: 300 }}>
         <InputLabel id="order-type-label">Order Type</InputLabel>
+        {/* would be nice to have a clear icon in here so we dont have to uncheck each individual order type */}
         <Select
           labelId="order-type-label"
           id="order-type-checkbox"
