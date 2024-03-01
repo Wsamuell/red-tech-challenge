@@ -73,7 +73,8 @@ const FilterBar = ({
         paddingLeft: 1,
         paddingRight: 1,
         display: 'flex',
-        justifyContent: 'space-evenly',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
         flexWrap: 'wrap',
         marginBottom: 5,
       }}
@@ -82,11 +83,11 @@ const FilterBar = ({
         disablePortal
         id="order-search-by-id"
         options={ordersId}
-        sx={{ width: 300 }}
+        sx={{ width: 200, height: 'auto', margin: 1 }}
         noOptionsText="No Order to match ID"
         onChange={handleSearchChange}
         renderInput={(params) => (
-          <TextField {...params} label="Customer Search" />
+          <TextField {...params} label="Customer Search" size="small" />
         )}
       />
       <CreateOrderModal
@@ -98,27 +99,40 @@ const FilterBar = ({
         variant="contained"
         color="primary"
         onClick={handleCreateOrder}
-        style={{ width: 200 }}
+        style={{
+          width: 200,
+          fontSize: 'small',
+          justifyContent: 'space-evenly',
+          margin: 10,
+        }}
       >
-        <AddIcon style={{ padding: 5 }} />
+        <AddIcon style={{ padding: 1 }} />
         Create Order
       </Button>
       <Button
         variant="contained"
         color="secondary"
         onClick={onDeleteSelected}
-        style={{ width: 200 }}
+        style={{
+          width: 200,
+          fontSize: 'small',
+          justifyContent: 'space-evenly',
+          margin: 10,
+        }}
       >
-        <DeleteOutlineIcon style={{ padding: 5 }} />
+        <DeleteOutlineIcon style={{ padding: 1 }} />
         Delete Selected
       </Button>
-      <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="order-type-label">Order Type</InputLabel>
+      <FormControl sx={{ width: 200, height: 'auto', margin: 1 }}>
+        <InputLabel id="order-type-label" size="small">
+          Order Type
+        </InputLabel>
         {/* would be nice to have a clear icon in here so we dont have to uncheck each individual order type */}
         <Select
           labelId="order-type-label"
           id="order-type-checkbox"
           multiple
+          size="small"
           value={selectedOrderType}
           onChange={handleOrderTypeChange}
           input={<OutlinedInput label="Order Type" />}
