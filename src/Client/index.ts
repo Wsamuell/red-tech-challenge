@@ -2,8 +2,8 @@ import { NewOrder, Order, OrderType } from '../types';
 
 const { REACT_APP_API_KEY, REACT_APP_URL } = process.env;
 
-// I tried a more DRY approach but it turns out i needs to pass response to some data and not others so, cratching a few things.
-// This should help improve readability with sacrifice of 30 lines of code
+// I tried a more DRY approach but it turns out i needs to pass response to some data and not others so, scratching a few things.
+// This should help improve readability with sacrifice of a few lines of code
 
 const fetchData = async (
   url: string,

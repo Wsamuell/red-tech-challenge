@@ -2,6 +2,8 @@ import {
   DataGrid,
   GridActionsCellItem,
   GridColDef,
+  GridEventListener,
+  GridRowEditStopReasons,
   GridRowId,
   GridRowModes,
   GridRowModesModel,
@@ -29,6 +31,7 @@ const DataTable = ({
 }: DataTableProps) => {
   const getRowId = (row: Order) => row.orderId;
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+  const [rows, setRows] = useState<Order[]>(orders);
 
   const handleSelectionChange = (newSelection: GridRowSelectionModel) => {
     const selectedOrderIds = newSelection.map((rowId) => rowId.toString());
@@ -40,13 +43,9 @@ const DataTable = ({
   };
 
   const handleSaveClick = (id: GridRowId) => () => {
-    const updatedRow = orders.find((row) => row.orderId === id);
-    if (!updatedRow) return;
-
-    onSaveChanges(updatedRow);
     setRowModesModel({
       ...rowModesModel,
-      [updatedRow.orderId]: { mode: GridRowModes.View },
+      [id]: { mode: GridRowModes.View },
     });
   };
 
@@ -56,6 +55,49 @@ const DataTable = ({
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
   };
+  const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
+
+  const processRowUpdate = async (
+    newRow: Order,
+    oldRow: Order
+  ): Promise<Order> => {
+    try {
+      const existingRow = rows.find((row) => row.orderId === newRow.orderId);
+      if (!existingRow) {
+        throw new Error('Row not found');
+      }
+
+      const updatedRow: Order = {
+        ...existingRow,
+        createdByUserName: newRow.createdByUserName,
+        orderType: newRow.orderType,
+        customerName: newRow.customerName,
+      };
+
+      await onSaveChanges(updatedRow);
+
+      setRows(
+        rows.map((row) => (row.orderId === newRow.orderId ? updatedRow : row))
+      );
+
+      return updatedRow;
+    } catch (error) {
+      console.error('Error updating row:', error);
+      return oldRow;
+    }
+  };
+
+  const handleRowEditStop: GridEventListener<'rowEditStop'> = (
+    params,
+    event
+  ) => {
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevented = true;
+    }
+  };
+
   const columns: GridColDef[] = [
     {
       disableColumnMenu: true,
@@ -160,19 +202,12 @@ const DataTable = ({
         rows={orders}
         columns={columns}
         editMode="row"
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 10 },
-          },
-        }}
         onRowSelectionModelChange={handleSelectionChange}
-        pageSizeOptions={[5, 10]}
+        rowModesModel={rowModesModel}
+        onRowModesModelChange={handleRowModesModelChange}
+        onRowEditStop={handleRowEditStop}
+        processRowUpdate={processRowUpdate}
         checkboxSelection
-        getCellClassName={(params) => {
-          const isInEditMode =
-            rowModesModel[params.id]?.mode === GridRowModes.Edit;
-          return isInEditMode ? 'edit-cell' : '';
-        }}
       />
     </Box>
   );

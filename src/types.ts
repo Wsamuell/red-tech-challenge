@@ -1,11 +1,12 @@
 export enum OrderType {
   PurchaseOrder = 'PurchaseOrder',
-  ReturnOrder = ' ReturnOrder',
+  ReturnOrder = 'ReturnOrder',
   SaleOrder = 'SaleOrder',
   Standard = 'Standard',
-  TransferOrder = ' TransferOrder',
+  TransferOrder = 'TransferOrder',
 }
 
+// BKMRK: Might decide to use this on the UI instead
 export const orderTypetoString = (orderType: OrderType): String => {
   switch (orderType) {
     case OrderType.PurchaseOrder:

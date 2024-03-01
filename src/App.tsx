@@ -64,9 +64,6 @@ function App() {
   const handleSaveChanges = async (updatedRow: Order) => {
     try {
       await updateOrder(updatedRow);
-      // Refetch data after updating
-      // actually might be smart to use state here, one down side might be the re order on fetch
-      fetchData();
     } catch (err) {
       setError(`Could not save changes: ${err}`);
     }
