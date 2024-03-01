@@ -12,7 +12,7 @@ import {
 import Box from '@mui/material/Box';
 import { Order, OrderType } from '../types';
 import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from '@mui/icons-material/Add';
+import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
 
@@ -150,7 +150,7 @@ const DataTable = ({
         if (isInEditMode) {
           return [
             <GridActionsCellItem
-              icon={<AddIcon />}
+              icon={<CheckIcon />}
               label="Save"
               sx={{
                 color: 'success.main',
