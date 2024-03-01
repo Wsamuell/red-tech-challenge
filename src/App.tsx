@@ -17,6 +17,8 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
+  const [searchInputID, setSearchInputID] = useState<string>('');
+  const [selectedTypes, setSelectedTypes] = useState<OrderType[]>([]);
 
   const fetchData = async () => {
     try {
@@ -49,18 +51,74 @@ function App() {
     }
   };
 
-  const handleOrderTypeChange = (selectedTypes: OrderType[]) => {
-    if (selectedTypes.length === 0) {
-      // If no types are selected, display all orders
-      setFilteredOrders(orders);
-    } else {
-      // Filter orders based on selected types
-      const filtered = orders.filter((order) =>
-        selectedTypes.includes(order.orderType)
-      );
-      setFilteredOrders(filtered);
+  const handleOrderFilterChange = (
+    searchInputID: string,
+    selectedTypes: OrderType[]
+  ) => {
+    let filteredOrders: Order[] = [];
+
+    // a little funky but i think this is better than an if-else statement overall although the 'condition' is not very readable.
+    // there are 3 things happening
+    //  - we check if we are filtering both type and search bar
+    //  - or filtering just searchbar
+    //  - or filtering by type
+    //  - or not filtering at all
+    const condition =
+      searchInputID.length > 0 && selectedTypes.length > 0
+        ? 'both'
+        : searchInputID.length > 0
+        ? 'searchInput'
+        : selectedTypes.length > 0
+        ? 'selectedTypes'
+        : 'none';
+
+    switch (condition) {
+      case 'both':
+        // Scenario: Both search input and order types provided
+        // First, filter by search input
+        // this scenerio  makes sure if you search by input and the type is not the same, nothing shows up
+        const filteredBySearch = orders.filter((order) =>
+          order.orderId.includes(searchInputID)
+        );
+
+        // Then, filter the result by selected types
+        filteredOrders = filteredBySearch.filter((order) =>
+          selectedTypes.includes(order.orderType)
+        );
+        break;
+      case 'searchInput':
+        // Scenario: Only search input provided
+        filteredOrders = orders.filter((order) =>
+          order.orderId.includes(searchInputID)
+        );
+        break;
+      case 'selectedTypes':
+        // Scenario: Only order types selected
+        filteredOrders = orders.filter((order) =>
+          selectedTypes.includes(order.orderType)
+        );
+        break;
+      case 'none':
+        // Scenario: Neither search input nor order types selected
+        filteredOrders = orders;
+        break;
+      default:
+        // Default case
+        filteredOrders = orders;
+        break;
     }
+
+    setFilteredOrders(filteredOrders);
   };
+  const handleOrderTypeChange = (selectedTypes: OrderType[]) => {
+    setSelectedTypes(selectedTypes);
+    handleOrderFilterChange(searchInputID, selectedTypes);
+  };
+  const handleSearchInputChange = (searchInputID: string) => {
+    setSearchInputID(searchInputID);
+    handleOrderFilterChange(searchInputID, selectedTypes);
+  };
+
   const handleSaveChanges = async (updatedRow: Order) => {
     try {
       await updateOrder(updatedRow);
@@ -95,6 +153,7 @@ function App() {
               onDeleteSelected={handleOrderDelete}
               onOrderTypeChange={handleOrderTypeChange}
               fetchData={fetchData}
+              onSearchInputChange={handleSearchInputChange}
             />
             <DataTable
               orders={filteredOrders}

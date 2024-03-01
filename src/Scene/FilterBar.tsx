@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import {
   Autocomplete,
   TextField,
@@ -21,6 +21,7 @@ import { OrderType } from '../types';
 interface FilterBarProps {
   ordersId: string[];
   orderTypes: OrderType[];
+  onSearchInputChange: (orderId: string) => void;
   onDeleteSelected: () => void;
   onOrderTypeChange: (type: OrderType[]) => void;
   fetchData: () => Promise<void>;
@@ -41,19 +42,23 @@ const FilterBar = ({
   ordersId,
   orderTypes,
   onDeleteSelected,
+  onSearchInputChange,
   onOrderTypeChange,
   fetchData,
 }: FilterBarProps) => {
   const [selectedOrderType, setSelectedOrderType] = useState<OrderType[]>([]);
   const [openCreateModal, setOpenCreateModal] = useState(false);
 
-  const handleChange = (event: SelectChangeEvent<string[]>) => {
+  const handleOrderTypeChange = (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
     // feels a little redundant to do this twice so i'm going to fix this with redux later
     setSelectedOrderType(value as OrderType[]);
     onOrderTypeChange(value as OrderType[]);
   };
 
+  const handleSearchChange = (event: ChangeEvent<{}>, value: string | null) => {
+    onSearchInputChange(value || '');
+  };
   const handleCreateOrder = () => {
     setOpenCreateModal(true);
   };
@@ -78,6 +83,8 @@ const FilterBar = ({
         id="order-search-by-id"
         options={ordersId}
         sx={{ width: 300 }}
+        noOptionsText="No Order to match ID"
+        onChange={handleSearchChange}
         renderInput={(params) => (
           <TextField {...params} label="Customer Search" />
         )}
@@ -113,7 +120,7 @@ const FilterBar = ({
           id="order-type-checkbox"
           multiple
           value={selectedOrderType}
-          onChange={handleChange}
+          onChange={handleOrderTypeChange}
           input={<OutlinedInput label="Order Type" />}
           renderValue={(selected) =>
             Array.isArray(selected) ? selected.join(', ') : selected
