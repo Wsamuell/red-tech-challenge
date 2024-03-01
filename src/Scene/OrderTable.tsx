@@ -153,16 +153,17 @@ const DataTable = ({
               icon={<AddIcon />}
               label="Save"
               sx={{
-                color: 'primary.main',
+                color: 'success.main',
               }}
               onClick={handleSaveClick(id)}
             />,
             <GridActionsCellItem
               icon={<CancelIcon />}
               label="Cancel"
-              className="textPrimary"
+              sx={{
+                color: 'secondary.main',
+              }}
               onClick={handleCancelClick(id)}
-              color="inherit"
             />,
           ];
         }
@@ -194,6 +195,12 @@ const DataTable = ({
         },
         '& .MuiDataGrid-row:hover .edit-icon': {
           visibility: 'visible',
+        },
+        '& .Mui-checked': {
+          color: 'secondary.main',
+        },
+        '& .MuiDataGrid-checkboxInput': {
+          borderColor: 'primary.main',
         },
       }}
     >

@@ -1,5 +1,4 @@
 import { AppBar, Toolbar, Typography, IconButton } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
 import Box from '@mui/material/Box';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -9,7 +8,7 @@ const NavBar = () => {
   return (
     <AppBar
       position="static"
-      color="primary"
+      color="transparent"
       style={{
         boxShadow: 'none',
         borderBottom: `2px solid #e0e0e0`,

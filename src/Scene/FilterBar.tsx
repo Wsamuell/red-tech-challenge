@@ -33,7 +33,7 @@ const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
+      width: 200,
     },
   },
 };
@@ -51,7 +51,6 @@ const FilterBar = ({
 
   const handleOrderTypeChange = (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
-    // feels a little redundant to do this twice so i'm going to fix this with redux later
     setSelectedOrderType(value as OrderType[]);
     onOrderTypeChange(value as OrderType[]);
   };
@@ -76,7 +75,7 @@ const FilterBar = ({
         justifyContent: 'flex-start',
         alignItems: 'center',
         flexWrap: 'wrap',
-        marginBottom: 5,
+        marginBottom: 1,
       }}
     >
       <Autocomplete

@@ -147,9 +147,7 @@ function App() {
           <div>
             <FilterBar
               ordersId={orders.map((order) => order.orderId)}
-              orderTypes={[
-                ...new Set(orders.map((order) => order.orderType as OrderType)),
-              ]}
+              orderTypes={Object.values(OrderType)}
               onDeleteSelected={handleOrderDelete}
               onOrderTypeChange={handleOrderTypeChange}
               fetchData={fetchData}
