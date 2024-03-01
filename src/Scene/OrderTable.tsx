@@ -62,12 +62,14 @@ const DataTable = ({
       field: 'orderId',
       headerName: 'Order ID',
       width: 300,
+      editable: false,
     },
     {
       disableColumnMenu: true,
       field: 'createdDate',
       headerName: 'Creation Date',
       width: 200,
+      editable: false,
     },
     {
       disableColumnMenu: true,
@@ -127,7 +129,8 @@ const DataTable = ({
           <GridActionsCellItem
             icon={<EditIcon />}
             label="Edit"
-            className="textPrimary"
+            className="textPrimary edit-icon"
+            sx={{ visibility: 'hidden' }}
             onClick={handleEditClick(id)}
             color="inherit"
           />,
@@ -146,6 +149,9 @@ const DataTable = ({
         },
         '& .textPrimary': {
           color: 'text.primary',
+        },
+        '& .MuiDataGrid-row:hover .edit-icon': {
+          visibility: 'visible',
         },
       }}
     >
