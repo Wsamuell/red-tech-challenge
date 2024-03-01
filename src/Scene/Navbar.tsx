@@ -3,6 +3,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Box from '@mui/material/Box';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import BackGroungImg from '../Assets/bg.png';
 
 const NavBar = () => {
   return (
@@ -20,10 +21,14 @@ const NavBar = () => {
           edge="start"
           color="inherit"
           aria-label="menu"
-          sx={{ mr: 1 }}
+          sx={{ margin: 0.1 }}
         >
-          <MenuIcon />
-          {/* Replace this icon with Red-tech logo if you can find a PNG */}
+          <img
+            src={BackGroungImg}
+            alt="backgroundImg"
+            width="30"
+            height="auto"
+          />
         </IconButton>
         <Typography variant="h6" color="inherit" component="div">
           Home
