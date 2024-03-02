@@ -4,11 +4,13 @@ import { Order } from '../../types';
 interface OrdersState {
   orders: Order[];
   filteredOrders: Order[];
+  selectedRows: string[];
 }
 
 const initialState: OrdersState = {
   orders: [],
   filteredOrders: [],
+  selectedRows: [],
 };
 
 const ordersSlice = createSlice({
@@ -19,7 +21,7 @@ const ordersSlice = createSlice({
       state.orders = action.payload;
     },
     setFilteredOrders: (state, action: PayloadAction<Order[]>) => {
-      state.orders = action.payload;
+      state.filteredOrders = action.payload;
     },
     addOrder: (state, action: PayloadAction<Order>) => {
       state.orders.push(action.payload);
@@ -32,6 +34,9 @@ const ordersSlice = createSlice({
         state.orders[index] = action.payload;
       }
     },
+    setSelectedRows: (state, action: PayloadAction<string[]>) => {
+      state.selectedRows = action.payload;
+    },
     deleteOrder: (state, action: PayloadAction<string[]>) => {
       state.orders = state.orders.filter(
         (order) => !action.payload.includes(order.orderId)
@@ -43,6 +48,7 @@ const ordersSlice = createSlice({
 export const {
   setOrders,
   setFilteredOrders,
+  setSelectedRows,
   addOrder,
   updateOrder,
   deleteOrder,

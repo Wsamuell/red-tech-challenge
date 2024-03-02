@@ -30,7 +30,6 @@ interface FilterBarProps {
   orderTypes: OrderType[];
   onSearchInputChange: (orderId: string) => void;
   onDeleteSelected: () => void;
-  selectedRows: number;
   onOrderTypeChange: (type: OrderType[]) => void;
   fetchData: () => Promise<void>;
 }
@@ -50,14 +49,13 @@ const FilterBar = ({
   ordersId,
   orderTypes,
   onDeleteSelected,
-  selectedRows,
   fetchData,
 }: FilterBarProps) => {
   const dispatch = useDispatch();
   const { openCreateModal, selectedTypes } = useSelector(
     (state: RootState) => state.filter
   );
-
+  const { selectedRows } = useSelector((state: RootState) => state.orders);
   const handleOrderTypeChange = (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
     dispatch(setSelectedTypes(value as OrderType[]));
@@ -131,10 +129,10 @@ const FilterBar = ({
           justifyContent: 'space-evenly',
           margin: 10,
         }}
-        disabled={selectedRows < 1}
+        disabled={selectedRows.length < 1}
       >
         <DeleteOutlineIcon style={{ padding: 1 }} />
-        {`Delete (${selectedRows})`}
+        {`Delete (${selectedRows.length})`}
       </Button>
       <FormControl sx={{ width: 200, height: 'auto', margin: 1 }}>
         <InputLabel id="order-type-label" size="small">

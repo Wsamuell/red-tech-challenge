@@ -7,11 +7,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import DataTable from './Scene/OrderTable';
-import {
-  setSelectedTypes,
-  setSearchInputID,
-  setSelectedRows,
-} from './Store/Slices/filterSlice';
+import { setSelectedTypes, setSearchInputID } from './Store/Slices/filterSlice';
+import { setSelectedRows } from './Store/Slices/orderSlice';
 import { setOrders, setFilteredOrders } from './Store/Slices/orderSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './Store/store';
@@ -20,10 +17,13 @@ const App = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
-  const {
-    filter: { searchInputID, selectedTypes, selectedRows },
-    orders: { orders, filteredOrders },
-  } = useSelector((state: RootState) => state);
+  const { orders, filteredOrders, selectedRows } = useSelector(
+    (state: RootState) => state.orders
+  );
+  const { searchInputID, selectedTypes } = useSelector(
+    (state: RootState) => state.filter
+  );
+
   const fetchData = async () => {
     try {
       const response = await fetchAllOrders();
@@ -38,11 +38,11 @@ const App = () => {
 
   useEffect(() => {
     fetchData();
-    // console.log(orders);
-  }, []);
+    // BKMRK: add the empty array back to only call this on load
+  });
 
   const handleSelectedRowsChange = (newSelectedRows: string[]) => {
-    setSelectedRows(newSelectedRows);
+    dispatch(setSelectedRows(newSelectedRows));
   };
 
   const handleOrderDelete = async () => {
@@ -153,7 +153,6 @@ const App = () => {
             ordersId={orders.map((order) => order.orderId)}
             orderTypes={Object.values(OrderType)}
             onDeleteSelected={handleOrderDelete}
-            selectedRows={selectedRows.length}
             onOrderTypeChange={handleOrderTypeChange}
             fetchData={fetchData}
             onSearchInputChange={handleSearchInputChange}
