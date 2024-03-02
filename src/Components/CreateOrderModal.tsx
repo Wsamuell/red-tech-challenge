@@ -79,7 +79,7 @@ const CreateOrderModal = ({
           p: 4,
         }}
       >
-        <Typography id="modal-title" variant="h6" component="h3">
+        <Typography id="modal-title" variant="h6" component="h3" color={'grey'}>
           Create New Order
         </Typography>
         <FormControl fullWidth sx={{ mt: 2 }}>
@@ -147,7 +147,7 @@ const CreateOrderModal = ({
           }}
           sx={{ position: 'absolute', top: 10, right: 10 }}
         >
-          <CloseIcon />
+          <CloseIcon color="error" />
         </Button>
       </Box>
     </Modal>

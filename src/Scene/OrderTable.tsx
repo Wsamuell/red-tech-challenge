@@ -4,23 +4,37 @@ import {
   GridColDef,
   GridEventListener,
   GridRowEditStopReasons,
+  GridPreProcessEditCellProps,
+  GridRenderEditCellParams,
   GridRowId,
   GridRowModes,
+  GridEditInputCell,
   GridRowModesModel,
   GridRowSelectionModel,
 } from '@mui/x-data-grid';
-import Box from '@mui/material/Box';
 import { Order, OrderType } from '../types';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Close';
+import StyledBox from '../Components/StyledBox';
 import { useState } from 'react';
+import StyledTooltip from '../Components/StyledTooltip';
 
 interface DataTableProps {
   orders: Order[];
   orderTypes: OrderType[];
   onSelectedRowsChange: (selectedRows: string[]) => void;
   onSaveChanges: (updatedRow: Order) => void;
+}
+
+function renderEditError(props: GridRenderEditCellParams) {
+  const { error } = props;
+
+  return (
+    <StyledTooltip open={!!error} title={'Field Required'}>
+      <GridEditInputCell {...props} />
+    </StyledTooltip>
+  );
 }
 
 const DataTable = ({
@@ -97,7 +111,10 @@ const DataTable = ({
       event.defaultMuiPrevented = true;
     }
   };
-
+  const preProcessEditCellProps = (params: GridPreProcessEditCellProps) => {
+    const hasError = params.props.value < 1;
+    return { ...params.props, error: hasError };
+  };
   const columns: GridColDef[] = [
     {
       disableColumnMenu: true,
@@ -120,6 +137,8 @@ const DataTable = ({
       width: 150,
       editable: true,
       type: 'string',
+      renderEditCell: renderEditError,
+      preProcessEditCellProps,
     },
     {
       disableColumnMenu: true,
@@ -137,6 +156,8 @@ const DataTable = ({
       width: 160,
       editable: true,
       type: 'string',
+      renderEditCell: renderEditError,
+      preProcessEditCellProps,
     },
     {
       field: 'actions',
@@ -179,25 +200,13 @@ const DataTable = ({
   ];
 
   return (
-    <Box
-      sx={{
-        height: 600,
-        width: '100%',
-        '& .actions': {
-          color: 'text.secondary',
-        },
-        '& .textPrimary': {
-          color: 'text.primary',
-        },
-        '& .MuiDataGrid-row:hover .edit-icon': {
-          visibility: 'visible',
-        },
-        '& .MuiCheckbox-colorPrimary.Mui-checked': {
-          color: 'error.main',
-        },
-      }}
-    >
+    <StyledBox>
       <DataGrid
+        sx={{
+          '& .MuiCheckbox-colorPrimary.Mui-checked': {
+            color: 'error.main',
+          },
+        }}
         getRowId={getRowId}
         rows={orders}
         columns={columns}
@@ -209,7 +218,7 @@ const DataTable = ({
         processRowUpdate={processRowUpdate}
         checkboxSelection
       />
-    </Box>
+    </StyledBox>
   );
 };
 
