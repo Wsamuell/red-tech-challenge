@@ -54,7 +54,9 @@ const FilterBar = ({
   fetchData,
 }: FilterBarProps) => {
   const dispatch = useDispatch();
-  const { filter } = useSelector((state: RootState) => state);
+  const { openCreateModal, selectedTypes } = useSelector(
+    (state: RootState) => state.filter
+  );
 
   const handleOrderTypeChange = (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
@@ -101,7 +103,7 @@ const FilterBar = ({
         )}
       />
       <CreateOrderModal
-        open={filter.openCreateModal}
+        open={openCreateModal}
         onClose={handleCloseCreateModal}
         fetchData={fetchData}
       />
@@ -144,7 +146,7 @@ const FilterBar = ({
           id="order-type-checkbox"
           multiple
           size="small"
-          value={filter.selectedTypes}
+          value={selectedTypes}
           onChange={handleOrderTypeChange}
           input={<OutlinedInput label="Order Type" />}
           renderValue={(selected) =>
@@ -154,7 +156,7 @@ const FilterBar = ({
         >
           {orderTypes.map((type) => (
             <MenuItem key={type} value={type}>
-              <Checkbox checked={filter.selectedTypes.indexOf(type) > -1} />
+              <Checkbox checked={selectedTypes.indexOf(type) > -1} />
               <ListItemText primary={type} />
             </MenuItem>
           ))}

@@ -1,13 +1,14 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Order } from '../../types';
-import { RootState } from '../store';
 
 interface OrdersState {
   orders: Order[];
+  filteredOrders: Order[];
 }
 
 const initialState: OrdersState = {
   orders: [],
+  filteredOrders: [],
 };
 
 const ordersSlice = createSlice({
@@ -15,6 +16,9 @@ const ordersSlice = createSlice({
   initialState,
   reducers: {
     setOrders: (state, action: PayloadAction<Order[]>) => {
+      state.orders = action.payload;
+    },
+    setFilteredOrders: (state, action: PayloadAction<Order[]>) => {
       state.orders = action.payload;
     },
     addOrder: (state, action: PayloadAction<Order>) => {
@@ -36,9 +40,12 @@ const ordersSlice = createSlice({
   },
 });
 
-export const { setOrders, addOrder, updateOrder, deleteOrder } =
-  ordersSlice.actions;
-
-export const selectOrders = (state: RootState) => state.orders;
+export const {
+  setOrders,
+  setFilteredOrders,
+  addOrder,
+  updateOrder,
+  deleteOrder,
+} = ordersSlice.actions;
 
 export default ordersSlice.reducer;

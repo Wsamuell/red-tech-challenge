@@ -7,24 +7,28 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import DataTable from './Scene/OrderTable';
-import { setSelectedTypes } from './Store/Slices/filterSlice';
+import {
+  setSelectedTypes,
+  setSearchInputID,
+  setSelectedRows,
+} from './Store/Slices/filterSlice';
+import { setOrders, setFilteredOrders } from './Store/Slices/orderSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './Store/store';
 
 const App = () => {
-  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
-  const [searchInputID, setSearchInputID] = useState<string>('');
   const dispatch = useDispatch();
-  const { filter } = useSelector((state: RootState) => state);
+  const {
+    filter: { searchInputID, selectedTypes, selectedRows },
+    orders: { orders, filteredOrders },
+  } = useSelector((state: RootState) => state);
   const fetchData = async () => {
     try {
       const response = await fetchAllOrders();
-      setOrders(response);
-      setFilteredOrders(response); // Initially, display all orders
+      dispatch(setOrders(response));
+      dispatch(setFilteredOrders(response)); // Initially, display all orders
     } catch (error) {
       setError('Error fetching orders. Please try again later.');
     } finally {
@@ -34,6 +38,7 @@ const App = () => {
 
   useEffect(() => {
     fetchData();
+    // console.log(orders);
   }, []);
 
   const handleSelectedRowsChange = (newSelectedRows: string[]) => {
@@ -115,8 +120,8 @@ const App = () => {
     handleOrderFilterChange(searchInputID, selectedTypes);
   };
   const handleSearchInputChange = (searchInputID: string) => {
-    setSearchInputID(searchInputID);
-    handleOrderFilterChange(searchInputID, filter.selectedTypes);
+    dispatch(setSearchInputID(searchInputID));
+    handleOrderFilterChange(searchInputID, selectedTypes);
   };
 
   const handleSaveChanges = async (updatedRow: Order) => {
