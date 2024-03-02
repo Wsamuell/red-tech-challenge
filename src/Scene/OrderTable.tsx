@@ -12,7 +12,7 @@ import {
   GridRowModesModel,
   GridRowSelectionModel,
 } from '@mui/x-data-grid';
-import { Order, OrderType } from '../types';
+import { Order, OrderType } from '../Helper/types';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Close';

@@ -9,7 +9,7 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { SelectChangeEvent, OutlinedInput } from '@mui/material/';
-import { NewOrder, OrderType } from '../types';
+import { NewOrder, OrderType } from '../Helper/types';
 import CloseIcon from '@mui/icons-material/Close';
 import { addNewOrder } from '../Client';
 

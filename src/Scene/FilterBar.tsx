@@ -16,22 +16,22 @@ import { SelectChangeEvent } from '@mui/material/Select';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import CreateOrderModal from '../Components/CreateOrderModal';
-import { OrderType } from '../types';
+import { OrderType } from '../Helper/types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  setSearchInputID,
   setSelectedTypes,
+  setSearchInputID,
   setOpenCreateModal,
 } from '../Store/Slices/filterSlice';
 import { RootState } from '../Store/store';
 
 interface FilterBarProps {
-  ordersId: string[];
-  orderTypes: OrderType[];
-  onSearchInputChange: (orderId: string) => void;
+  fetchData: () => Promise<void>;
   onDeleteSelected: () => void;
   onOrderTypeChange: (type: OrderType[]) => void;
-  fetchData: () => Promise<void>;
+  onSearchInputChange: (orderId: string) => void;
+  ordersId: string[];
+  orderTypes: OrderType[];
 }
 
 const ITEM_HEIGHT = 48;
@@ -46,10 +46,12 @@ const MenuProps = {
 };
 
 const FilterBar = ({
+  fetchData,
+  onDeleteSelected,
+  onOrderTypeChange,
+  onSearchInputChange,
   ordersId,
   orderTypes,
-  onDeleteSelected,
-  fetchData,
 }: FilterBarProps) => {
   const dispatch = useDispatch();
   const { openCreateModal, selectedTypes } = useSelector(
@@ -59,7 +61,7 @@ const FilterBar = ({
   const handleOrderTypeChange = (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
     dispatch(setSelectedTypes(value as OrderType[]));
-    // onOrderTypeChange(value as OrderType[]);
+    onOrderTypeChange(value as OrderType[]);
   };
 
   // im a little conflicted here, if a user searches for an order we should clear the orderType input to make sure they can find that order,
@@ -68,13 +70,14 @@ const FilterBar = ({
   // so im not going to clear it is the verdict
   const handleSearchChange = (event: ChangeEvent<{}>, value: string | null) => {
     dispatch(setSearchInputID(value || ''));
+    onSearchInputChange(value || '');
   };
   const handleCreateOrder = () => {
-    setOpenCreateModal(true);
+    dispatch(setOpenCreateModal(true));
   };
 
   const handleCloseCreateModal = () => {
-    setOpenCreateModal(false);
+    dispatch(setOpenCreateModal(false));
   };
 
   return (

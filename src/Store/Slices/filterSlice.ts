@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { OrderType } from '../../types';
+import { OrderType } from '../../Helper/types';
 
 interface FilterState {
   searchInputID: string;
