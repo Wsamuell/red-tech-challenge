@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import DataTable from './Scene/OrderTable';
 
-function App() {
+const App = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -160,6 +160,6 @@ function App() {
       )}
     </div>
   );
-}
+};
 
 export default App;
