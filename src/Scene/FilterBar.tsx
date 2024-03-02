@@ -23,6 +23,7 @@ interface FilterBarProps {
   orderTypes: OrderType[];
   onSearchInputChange: (orderId: string) => void;
   onDeleteSelected: () => void;
+  selectedRows: number;
   onOrderTypeChange: (type: OrderType[]) => void;
   fetchData: () => Promise<void>;
 }
@@ -42,6 +43,7 @@ const FilterBar = ({
   ordersId,
   orderTypes,
   onDeleteSelected,
+  selectedRows,
   onSearchInputChange,
   onOrderTypeChange,
   fetchData,
@@ -110,7 +112,7 @@ const FilterBar = ({
       </Button>
       <Button
         variant="contained"
-        color="secondary"
+        color="error"
         onClick={onDeleteSelected}
         style={{
           width: 200,
@@ -118,9 +120,10 @@ const FilterBar = ({
           justifyContent: 'space-evenly',
           margin: 10,
         }}
+        disabled={selectedRows < 1}
       >
         <DeleteOutlineIcon style={{ padding: 1 }} />
-        Delete Selected
+        {`Delete (${selectedRows})`}
       </Button>
       <FormControl sx={{ width: 200, height: 'auto', margin: 1 }}>
         <InputLabel id="order-type-label" size="small">

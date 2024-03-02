@@ -13,17 +13,6 @@ import { NewOrder, OrderType } from '../types';
 import CloseIcon from '@mui/icons-material/Close';
 import { addNewOrder } from '../Client';
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 250,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
-};
-
 interface CreateOrderModalProps {
   open: boolean;
   onClose: () => void;
@@ -77,7 +66,19 @@ const CreateOrderModal = ({
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
     >
-      <Box sx={style}>
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 250,
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          borderRadius: 1,
+          p: 4,
+        }}
+      >
         <Typography id="modal-title" variant="h6" component="h3">
           Create New Order
         </Typography>
@@ -123,9 +124,14 @@ const CreateOrderModal = ({
         </FormControl>
         <Button
           variant="contained"
-          color="primary"
+          color="success"
           onClick={handleOrderSubmit}
           sx={{ mt: 2 }}
+          disabled={
+            formData.customerName.trim() === '' ||
+            formData.createdByUserName.trim() === '' ||
+            formData.orderType.trim() === ''
+          }
         >
           Submit Order
         </Button>

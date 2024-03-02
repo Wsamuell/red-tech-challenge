@@ -29,7 +29,7 @@ const NavBar = () => {
             height="auto"
           />
         </IconButton>
-        <Typography variant="h6" color="primary.dark" component="div">
+        <Typography variant="h6" color="grey" component="div">
           Home
         </Typography>
         <Box sx={{ flexGrow: 1 }} />

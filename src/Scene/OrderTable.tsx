@@ -152,17 +152,13 @@ const DataTable = ({
             <GridActionsCellItem
               icon={<CheckIcon />}
               label="Save"
-              sx={{
-                color: 'success.main',
-              }}
+              color="success"
               onClick={handleSaveClick(id)}
             />,
             <GridActionsCellItem
               icon={<CancelIcon />}
               label="Cancel"
-              sx={{
-                color: 'secondary.main',
-              }}
+              color="error"
               onClick={handleCancelClick(id)}
             />,
           ];
@@ -185,7 +181,7 @@ const DataTable = ({
   return (
     <Box
       sx={{
-        height: 500,
+        height: 600,
         width: '100%',
         '& .actions': {
           color: 'text.secondary',
@@ -195,12 +191,6 @@ const DataTable = ({
         },
         '& .MuiDataGrid-row:hover .edit-icon': {
           visibility: 'visible',
-        },
-        '& .Mui-checked': {
-          color: 'secondary.main',
-        },
-        '& .MuiDataGrid-checkboxInput': {
-          borderColor: 'primary.main',
         },
       }}
     >

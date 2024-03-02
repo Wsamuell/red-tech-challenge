@@ -8,8 +8,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import DataTable from './Scene/OrderTable';
-import { ThemeProvider } from '@mui/material';
-import { theme } from './Style/Theme';
 
 function App() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -129,39 +127,38 @@ function App() {
 
   return (
     <div className="App">
-      <ThemeProvider theme={theme}>
-        <Navbar />
-        {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <CircularProgress />
-          </Box>
-        ) : error ? (
-          <Alert
-            severity="error"
-            color="error"
-            sx={{ display: 'flex', justifyContent: 'center' }}
-          >
-            Error Loading Dashboard, Please contact Engineering!
-          </Alert>
-        ) : (
-          <div>
-            <FilterBar
-              ordersId={orders.map((order) => order.orderId)}
-              orderTypes={Object.values(OrderType)}
-              onDeleteSelected={handleOrderDelete}
-              onOrderTypeChange={handleOrderTypeChange}
-              fetchData={fetchData}
-              onSearchInputChange={handleSearchInputChange}
-            />
-            <DataTable
-              orders={filteredOrders}
-              orderTypes={Object.values(OrderType)}
-              onSelectedRowsChange={handleSelectedRowsChange}
-              onSaveChanges={handleSaveChanges}
-            />
-          </div>
-        )}
-      </ThemeProvider>
+      <Navbar />
+      {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <CircularProgress />
+        </Box>
+      ) : error ? (
+        <Alert
+          severity="error"
+          color="error"
+          sx={{ display: 'flex', justifyContent: 'center' }}
+        >
+          Error Loading Dashboard, Please contact Engineering!
+        </Alert>
+      ) : (
+        <div>
+          <FilterBar
+            ordersId={orders.map((order) => order.orderId)}
+            orderTypes={Object.values(OrderType)}
+            onDeleteSelected={handleOrderDelete}
+            selectedRows={selectedRows.length}
+            onOrderTypeChange={handleOrderTypeChange}
+            fetchData={fetchData}
+            onSearchInputChange={handleSearchInputChange}
+          />
+          <DataTable
+            orders={filteredOrders}
+            orderTypes={Object.values(OrderType)}
+            onSelectedRowsChange={handleSelectedRowsChange}
+            onSaveChanges={handleSaveChanges}
+          />
+        </div>
+      )}
     </div>
   );
 }
