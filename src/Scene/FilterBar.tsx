@@ -1,22 +1,29 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent } from 'react';
 import {
   Autocomplete,
-  TextField,
-  Button,
-  MenuItem,
   Box,
+  Button,
+  Checkbox,
   FormControl,
   InputLabel,
-  Select,
-  Checkbox,
-  OutlinedInput,
   ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  TextField,
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import { SelectChangeEvent } from '@mui/material/Select';
+import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import CreateOrderModal from '../Components/CreateOrderModal';
 import { OrderType } from '../types';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  setSearchInputID,
+  setSelectedTypes,
+  setOpenCreateModal,
+} from '../Store/Slices/filterSlice';
+import { RootState } from '../Store/store';
 
 interface FilterBarProps {
   ordersId: string[];
@@ -44,17 +51,15 @@ const FilterBar = ({
   orderTypes,
   onDeleteSelected,
   selectedRows,
-  onSearchInputChange,
-  onOrderTypeChange,
   fetchData,
 }: FilterBarProps) => {
-  const [selectedOrderType, setSelectedOrderType] = useState<OrderType[]>([]);
-  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const dispatch = useDispatch();
+  const { filter } = useSelector((state: RootState) => state);
 
   const handleOrderTypeChange = (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
-    setSelectedOrderType(value as OrderType[]);
-    onOrderTypeChange(value as OrderType[]);
+    dispatch(setSelectedTypes(value as OrderType[]));
+    // onOrderTypeChange(value as OrderType[]);
   };
 
   // im a little conflicted here, if a user searches for an order we should clear the orderType input to make sure they can find that order,
@@ -62,7 +67,7 @@ const FilterBar = ({
   // this might not be what we always want since there might be a case where the user actually wants to filter the searches
   // so im not going to clear it is the verdict
   const handleSearchChange = (event: ChangeEvent<{}>, value: string | null) => {
-    onSearchInputChange(value || '');
+    dispatch(setSearchInputID(value || ''));
   };
   const handleCreateOrder = () => {
     setOpenCreateModal(true);
@@ -96,7 +101,7 @@ const FilterBar = ({
         )}
       />
       <CreateOrderModal
-        open={openCreateModal}
+        open={filter.openCreateModal}
         onClose={handleCloseCreateModal}
         fetchData={fetchData}
       />
@@ -139,7 +144,7 @@ const FilterBar = ({
           id="order-type-checkbox"
           multiple
           size="small"
-          value={selectedOrderType}
+          value={filter.selectedTypes}
           onChange={handleOrderTypeChange}
           input={<OutlinedInput label="Order Type" />}
           renderValue={(selected) =>
@@ -149,7 +154,7 @@ const FilterBar = ({
         >
           {orderTypes.map((type) => (
             <MenuItem key={type} value={type}>
-              <Checkbox checked={selectedOrderType.indexOf(type) > -1} />
+              <Checkbox checked={filter.selectedTypes.indexOf(type) > -1} />
               <ListItemText primary={type} />
             </MenuItem>
           ))}

@@ -5,11 +5,13 @@ import { RootState } from '../store';
 interface FilterState {
   searchInputID: string;
   selectedTypes: OrderType[];
+  openCreateModal: boolean;
 }
 
 const initialState: FilterState = {
   searchInputID: '',
   selectedTypes: [],
+  openCreateModal: false,
 };
 
 const filterSlice = createSlice({
@@ -22,11 +24,13 @@ const filterSlice = createSlice({
     setSelectedTypes: (state, action: PayloadAction<OrderType[]>) => {
       state.selectedTypes = action.payload;
     },
+    setOpenCreateModal: (state, action: PayloadAction<boolean>) => {
+      state.openCreateModal = action.payload;
+    },
   },
 });
 
-export const { setSearchInputID, setSelectedTypes } = filterSlice.actions;
-
-export const selectFilter = (state: RootState) => state.filter;
+export const { setSearchInputID, setSelectedTypes, setOpenCreateModal } =
+  filterSlice.actions;
 
 export default filterSlice.reducer;

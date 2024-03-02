@@ -7,6 +7,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import DataTable from './Scene/OrderTable';
+import { setSelectedTypes } from './Store/Slices/filterSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from './Store/store';
 
 const App = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -15,8 +18,8 @@ const App = () => {
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   const [searchInputID, setSearchInputID] = useState<string>('');
-  const [selectedTypes, setSelectedTypes] = useState<OrderType[]>([]);
-
+  const dispatch = useDispatch();
+  const { filter } = useSelector((state: RootState) => state);
   const fetchData = async () => {
     try {
       const response = await fetchAllOrders();
@@ -108,12 +111,12 @@ const App = () => {
     setFilteredOrders(filteredOrders);
   };
   const handleOrderTypeChange = (selectedTypes: OrderType[]) => {
-    setSelectedTypes(selectedTypes);
+    dispatch(setSelectedTypes(selectedTypes));
     handleOrderFilterChange(searchInputID, selectedTypes);
   };
   const handleSearchInputChange = (searchInputID: string) => {
     setSearchInputID(searchInputID);
-    handleOrderFilterChange(searchInputID, selectedTypes);
+    handleOrderFilterChange(searchInputID, filter.selectedTypes);
   };
 
   const handleSaveChanges = async (updatedRow: Order) => {
