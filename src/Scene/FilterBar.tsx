@@ -20,16 +20,15 @@ import { OrderType } from '../Helper/types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   setSelectedTypes,
-  setSearchInputID,
   setOpenCreateModal,
 } from '../Store/Slices/filterSlice';
 import { RootState } from '../Store/store';
+import { filterOrderedBySearchAndType } from '../Helper/filterFunctionality';
+import { setFilteredOrders } from '../Store/Slices/orderSlice';
 
 interface FilterBarProps {
   fetchData: () => Promise<void>;
   onDeleteSelected: () => void;
-  onOrderTypeChange: (type: OrderType[]) => void;
-  onSearchInputChange: (orderId: string) => void;
   ordersId: string[];
   orderTypes: OrderType[];
 }
@@ -48,20 +47,28 @@ const MenuProps = {
 const FilterBar = ({
   fetchData,
   onDeleteSelected,
-  onOrderTypeChange,
-  onSearchInputChange,
   ordersId,
   orderTypes,
 }: FilterBarProps) => {
   const dispatch = useDispatch();
-  const { openCreateModal, selectedTypes } = useSelector(
+  const { openCreateModal, selectedTypes, searchInputID } = useSelector(
     (state: RootState) => state.filter
   );
-  const { selectedRows } = useSelector((state: RootState) => state.orders);
+  const { orders, selectedRows } = useSelector(
+    (state: RootState) => state.orders
+  );
   const handleOrderTypeChange = (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
     dispatch(setSelectedTypes(value as OrderType[]));
-    onOrderTypeChange(value as OrderType[]);
+    dispatch(
+      setFilteredOrders(
+        filterOrderedBySearchAndType(
+          orders,
+          searchInputID,
+          value as OrderType[]
+        )
+      )
+    );
   };
 
   // im a little conflicted here, if a user searches for an order we should clear the orderType input to make sure they can find that order,
@@ -69,15 +76,14 @@ const FilterBar = ({
   // this might not be what we always want since there might be a case where the user actually wants to filter the searches
   // so im not going to clear it is the verdict
   const handleSearchChange = (event: ChangeEvent<{}>, value: string | null) => {
-    dispatch(setSearchInputID(value || ''));
-    onSearchInputChange(value || '');
-  };
-  const handleCreateOrder = () => {
-    dispatch(setOpenCreateModal(true));
-  };
-
-  const handleCloseCreateModal = () => {
-    dispatch(setOpenCreateModal(false));
+    const input = value || '';
+    // In the event we serch for an order by id, i think it makes the most sense to clearout the Ordertype in case something is in there
+    // dispatch(setSelectedTypes([]));
+    dispatch(
+      setFilteredOrders(
+        filterOrderedBySearchAndType(orders, input, selectedTypes)
+      )
+    );
   };
 
   return (
@@ -105,13 +111,13 @@ const FilterBar = ({
       />
       <CreateOrderModal
         open={openCreateModal}
-        onClose={handleCloseCreateModal}
+        onClose={() => dispatch(setOpenCreateModal(false))}
         fetchData={fetchData}
       />
       <Button
         variant="contained"
         color="primary"
-        onClick={handleCreateOrder}
+        onClick={() => dispatch(setOpenCreateModal(true))}
         style={{
           width: 200,
           fontSize: 'small',

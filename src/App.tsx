@@ -2,13 +2,11 @@ import { useEffect, useState } from 'react';
 import FilterBar from './Scene/FilterBar';
 import Navbar from './Scene/Navbar';
 import { Order, OrderType } from './Helper/types';
-import { filterOrderedBySearchAndType } from './Helper/filterFunctionality';
 import { deleteOrder, fetchAllOrders, updateOrder } from './Client';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Alert from '@mui/material/Alert';
 import DataTable from './Scene/OrderTable';
-import { setSelectedTypes, setSearchInputID } from './Store/Slices/filterSlice';
 import { setSelectedRows } from './Store/Slices/orderSlice';
 import { setOrders, setFilteredOrders } from './Store/Slices/orderSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,9 +18,6 @@ const App = () => {
   const dispatch = useDispatch();
   const { orders, filteredOrders, selectedRows } = useSelector(
     (state: RootState) => state.orders
-  );
-  const { searchInputID, selectedTypes } = useSelector(
-    (state: RootState) => state.filter
   );
 
   const fetchData = async () => {
@@ -51,27 +46,11 @@ const App = () => {
       await deleteOrder(selectedRows);
       dispatch(setSelectedRows([]));
       // i think this is the best approach in terms of showing updates to deleted data rather than using state in this case, i say so because i could easily remove it from the array of orders but when i go to add a new order the same problem will occur and i wont have the order id to update state
+
       fetchData(); // Refetch data after deletion
     } catch (err) {
       throw new Error(`Couldnt Delete Order: ${err}`);
     }
-  };
-
-  const handleOrderTypeChange = (selectedTypes: OrderType[]) => {
-    dispatch(setSelectedTypes(selectedTypes));
-    dispatch(
-      setFilteredOrders(
-        filterOrderedBySearchAndType(orders, searchInputID, selectedTypes)
-      )
-    );
-  };
-  const handleSearchInputChange = (searchInputID: string) => {
-    dispatch(setSearchInputID(searchInputID));
-    dispatch(
-      setFilteredOrders(
-        filterOrderedBySearchAndType(orders, searchInputID, selectedTypes)
-      )
-    );
   };
 
   const handleSaveChanges = async (updatedRow: Order) => {
@@ -103,9 +82,7 @@ const App = () => {
             ordersId={orders.map((order) => order.orderId)}
             orderTypes={Object.values(OrderType)}
             onDeleteSelected={handleOrderDelete}
-            onOrderTypeChange={handleOrderTypeChange}
             fetchData={fetchData}
-            onSearchInputChange={handleSearchInputChange}
           />
           <DataTable
             orders={filteredOrders}
