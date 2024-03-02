@@ -192,6 +192,9 @@ const DataTable = ({
         '& .MuiDataGrid-row:hover .edit-icon': {
           visibility: 'visible',
         },
+        '& .MuiCheckbox-colorPrimary.Mui-checked': {
+          color: 'error.main',
+        },
       }}
     >
       <DataGrid
