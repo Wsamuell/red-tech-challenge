@@ -133,7 +133,7 @@ const FilterBar = ({
         <InputLabel id="order-type-label" size="small">
           Order Type
         </InputLabel>
-        {/* would be nice to have a clear icon in here so we dont have to uncheck each individual order type */}
+
         <Select
           labelId="order-type-label"
           id="order-type-checkbox"

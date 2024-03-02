@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import './App.css';
 import FilterBar from './Scene/FilterBar';
 import Navbar from './Scene/Navbar';
 import { Order, OrderType } from './types';
