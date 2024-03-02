@@ -57,6 +57,10 @@ const FilterBar = ({
     onOrderTypeChange(value as OrderType[]);
   };
 
+  // im a little conflicted here, if a user searches for an order we should clear the orderType input to make sure they can find that order,
+
+  // this might not be what we always want since there might be a case where the user actually wants to filter the searches
+  // so im not going to clear it is the verdict
   const handleSearchChange = (event: ChangeEvent<{}>, value: string | null) => {
     onSearchInputChange(value || '');
   };

@@ -18,7 +18,7 @@
     "skipLibCheck": true,
     "strict": true,
     "strictNullChecks": true,
-    "target": "es5"
+    "target": "ESNext"
   },
   "include": ["src"]
 }
