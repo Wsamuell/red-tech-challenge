@@ -44,10 +44,15 @@ const App = () => {
   const handleOrderDelete = async () => {
     try {
       await deleteOrder(selectedRows);
-      dispatch(setSelectedRows([]));
-      // i think this is the best approach in terms of showing updates to deleted data rather than using state in this case, i say so because i could easily remove it from the array of orders but when i go to add a new order the same problem will occur and i wont have the order id to update state
+      dispatch(
+        setFilteredOrders(
+          filteredOrders.filter(
+            (order) => !selectedRows.includes(order.orderId)
+          )
+        )
+      );
 
-      fetchData(); // Refetch data after deletion
+      dispatch(setSelectedRows([]));
     } catch (err) {
       throw new Error(`Couldnt Delete Order: ${err}`);
     }
