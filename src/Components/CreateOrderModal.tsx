@@ -1,9 +1,11 @@
 import { addNewOrder } from '../Client';
-import { filterOrderedBySearchAndType } from '../Helper/filterFunctionality';
 import { NewOrder, Order, orderTypeList } from '../Helper/types';
 import { RootState } from '../Store/store';
 import { SelectChangeEvent, OutlinedInput } from '@mui/material/';
-import { setFilteredOrders, setOrders } from '../Store/Slices/orderSlice';
+import {
+  addOrder,
+  filteredOrdersBySearchAndType,
+} from '../Store/Slices/orderSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
@@ -30,7 +32,6 @@ const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
     orderType: '',
   });
   const dispatch = useDispatch();
-  const { orders } = useSelector((state: RootState) => state.orders);
   const { selectedTypes, searchInputID } = useSelector(
     (state: RootState) => state.filter
   );
@@ -52,16 +53,14 @@ const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
   const handleOrderSubmit = async () => {
     try {
       await addNewOrder(formData).then((data: Order) => {
-        // instead of refetching
-        dispatch(setOrders([...orders, data]));
+        // instead of refetching use state
+        dispatch(addOrder(data));
+        // also update the filtered list
         dispatch(
-          setFilteredOrders(
-            filterOrderedBySearchAndType(
-              [...orders, data],
-              searchInputID,
-              selectedTypes
-            )
-          )
+          filteredOrdersBySearchAndType({
+            inputID: searchInputID,
+            types: selectedTypes,
+          })
         );
       });
       setFormData({

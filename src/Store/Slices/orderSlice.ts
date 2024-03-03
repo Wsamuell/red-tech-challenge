@@ -1,4 +1,5 @@
-import { Order } from '../../Helper/types';
+import { filterOrdersBySearchAndType } from '../../Helper/filterFunctionality';
+import { Order, OrderType } from '../../Helper/types';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface OrdersState {
@@ -26,6 +27,17 @@ const ordersSlice = createSlice({
     addOrder: (state, action: PayloadAction<Order>) => {
       state.orders.push(action.payload);
     },
+    filteredOrdersBySearchAndType: (
+      state,
+      action: PayloadAction<{ inputID: string; types: OrderType[] }>
+    ) => {
+      const { inputID, types } = action.payload;
+      state.filteredOrders = filterOrdersBySearchAndType(
+        state.orders,
+        inputID,
+        types
+      );
+    },
     updateOrder: (state, action: PayloadAction<Order>) => {
       const index = state.orders.findIndex(
         (order) => order.orderId === action.payload.orderId
@@ -37,8 +49,13 @@ const ordersSlice = createSlice({
     setSelectedRows: (state, action: PayloadAction<string[]>) => {
       state.selectedRows = action.payload;
     },
-    deleteOrder: (state, action: PayloadAction<string[]>) => {
+    setDeleteOrders: (state, action: PayloadAction<string[]>) => {
       state.orders = state.orders.filter(
+        (order) => !action.payload.includes(order.orderId)
+      );
+    },
+    setDeleteFilteredOrders: (state, action: PayloadAction<string[]>) => {
+      state.filteredOrders = state.filteredOrders.filter(
         (order) => !action.payload.includes(order.orderId)
       );
     },
@@ -47,7 +64,9 @@ const ordersSlice = createSlice({
 
 export const {
   addOrder,
-  deleteOrder,
+  filteredOrdersBySearchAndType,
+  setDeleteFilteredOrders,
+  setDeleteOrders,
   setFilteredOrders,
   setOrders,
   setSelectedRows,

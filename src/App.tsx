@@ -1,7 +1,12 @@
 import { deleteOrder, fetchAllOrders, updateOrder } from './Client';
 import { Order, orderTypeList } from './Helper/types';
 import { RootState } from './Store/store';
-import { setOrders, setFilteredOrders } from './Store/Slices/orderSlice';
+import {
+  setDeleteOrders,
+  setDeleteFilteredOrders,
+  setOrders,
+  setFilteredOrders,
+} from './Store/Slices/orderSlice';
 import { setSelectedRows } from './Store/Slices/orderSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -16,7 +21,7 @@ const App = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
-  const { orders, filteredOrders, selectedRows } = useSelector(
+  const { orders, selectedRows } = useSelector(
     (state: RootState) => state.orders
   );
 
@@ -44,18 +49,9 @@ const App = () => {
   const handleOrderDelete = async () => {
     try {
       await deleteOrder(selectedRows);
-      dispatch(
-        setOrders(
-          orders.filter((order) => !selectedRows.includes(order.orderId))
-        )
-      );
-      dispatch(
-        setFilteredOrders(
-          filteredOrders.filter(
-            (order) => !selectedRows.includes(order.orderId)
-          )
-        )
-      );
+      // Delete in both the orders array and filteredArray
+      dispatch(setDeleteOrders(selectedRows));
+      dispatch(setDeleteFilteredOrders(selectedRows));
 
       dispatch(setSelectedRows([]));
     } catch (err) {

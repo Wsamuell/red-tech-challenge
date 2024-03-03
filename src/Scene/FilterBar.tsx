@@ -12,11 +12,10 @@ import {
   Select,
   TextField,
 } from '@mui/material';
-import { filterOrderedBySearchAndType } from '../Helper/filterFunctionality';
 import { OrderType, orderTypeList } from '../Helper/types';
 import { RootState } from '../Store/store';
 import { SelectChangeEvent } from '@mui/material/Select';
-import { setFilteredOrders } from '../Store/Slices/orderSlice';
+import { filteredOrdersBySearchAndType } from '../Store/Slices/orderSlice';
 import { setSearchInputID } from '../Store/Slices/filterSlice';
 import {
   setSelectedTypes,
@@ -48,20 +47,15 @@ const FilterBar = ({ onDeleteSelected, ordersId }: FilterBarProps) => {
   const { openCreateModal, selectedTypes, searchInputID } = useSelector(
     (state: RootState) => state.filter
   );
-  const { orders, selectedRows } = useSelector(
-    (state: RootState) => state.orders
-  );
+  const { selectedRows } = useSelector((state: RootState) => state.orders);
   const handleOrderTypeChange = (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
     dispatch(setSelectedTypes(value as OrderType[]));
     dispatch(
-      setFilteredOrders(
-        filterOrderedBySearchAndType(
-          orders,
-          searchInputID,
-          value as OrderType[]
-        )
-      )
+      filteredOrdersBySearchAndType({
+        inputID: searchInputID,
+        types: value as OrderType[],
+      })
     );
   };
 
@@ -69,9 +63,7 @@ const FilterBar = ({ onDeleteSelected, ordersId }: FilterBarProps) => {
     const input = value || '';
     dispatch(setSearchInputID(input));
     dispatch(
-      setFilteredOrders(
-        filterOrderedBySearchAndType(orders, input, selectedTypes)
-      )
+      filteredOrdersBySearchAndType({ inputID: input, types: selectedTypes })
     );
   };
 

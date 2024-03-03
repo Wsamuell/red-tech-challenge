@@ -1,6 +1,6 @@
 import { Order, OrderType } from './types';
 
-export const filterOrderedBySearchAndType = (
+export const filterOrdersBySearchAndType = (
   orders: Order[],
   searchInputID: string,
   selectedTypes: OrderType[]
