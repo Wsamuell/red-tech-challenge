@@ -1,5 +1,5 @@
 import { deleteOrder, fetchAllOrders, updateOrder } from './Client';
-import { Order, OrderType } from './Helper/types';
+import { Order, orderTypeList } from './Helper/types';
 import { RootState } from './Store/store';
 import { setOrders, setFilteredOrders } from './Store/Slices/orderSlice';
 import { setSelectedRows } from './Store/Slices/orderSlice';
@@ -91,12 +91,11 @@ const App = () => {
           <FilterBar
             onDeleteSelected={handleOrderDelete}
             ordersId={orders.map((order) => order.orderId)}
-            orderTypes={Object.values(OrderType)}
           />
           <DataTable
             onSaveChanges={handleSaveChanges}
             onSelectedRowsChange={handleSelectedRowsChange}
-            orderTypes={Object.values(OrderType)}
+            orderTypes={orderTypeList}
           />
         </div>
       )}

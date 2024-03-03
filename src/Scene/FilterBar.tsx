@@ -13,7 +13,7 @@ import {
   TextField,
 } from '@mui/material';
 import { filterOrderedBySearchAndType } from '../Helper/filterFunctionality';
-import { OrderType } from '../Helper/types';
+import { OrderType, orderTypeList } from '../Helper/types';
 import { RootState } from '../Store/store';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { setFilteredOrders } from '../Store/Slices/orderSlice';
@@ -30,7 +30,6 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 interface FilterBarProps {
   onDeleteSelected: () => void;
   ordersId: string[];
-  orderTypes: OrderType[];
 }
 
 const ITEM_HEIGHT = 48;
@@ -44,11 +43,7 @@ const MenuProps = {
   },
 };
 
-const FilterBar = ({
-  onDeleteSelected,
-  ordersId,
-  orderTypes,
-}: FilterBarProps) => {
+const FilterBar = ({ onDeleteSelected, ordersId }: FilterBarProps) => {
   const dispatch = useDispatch();
   const { openCreateModal, selectedTypes, searchInputID } = useSelector(
     (state: RootState) => state.filter
@@ -72,7 +67,6 @@ const FilterBar = ({
 
   const handleSearchChange = (event: ChangeEvent<{}>, value: string | null) => {
     const input = value || '';
-    // In the event we serch for an order by id, i think it makes the most sense to clearout the Ordertype in case something is in there
     dispatch(setSearchInputID(input));
     dispatch(
       setFilteredOrders(
@@ -155,8 +149,8 @@ const FilterBar = ({
           }
           MenuProps={MenuProps}
         >
-          {orderTypes.map((type) => (
-            <MenuItem key={type} value={type}>
+          {orderTypeList.map((type, index) => (
+            <MenuItem key={index} value={type}>
               <Checkbox checked={selectedTypes.indexOf(type) > -1} />
               <ListItemText primary={type} />
             </MenuItem>

@@ -1,6 +1,6 @@
 import { addNewOrder } from '../Client';
 import { filterOrderedBySearchAndType } from '../Helper/filterFunctionality';
-import { NewOrder, Order, OrderType } from '../Helper/types';
+import { NewOrder, Order, orderTypeList } from '../Helper/types';
 import { RootState } from '../Store/store';
 import { SelectChangeEvent, OutlinedInput } from '@mui/material/';
 import { setFilteredOrders, setOrders } from '../Store/Slices/orderSlice';
@@ -123,19 +123,11 @@ const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
             onChange={handleOrderValuesChange}
             value={formData.orderType}
           >
-            <MenuItem value={OrderType.PurchaseOrder}>
-              {OrderType.PurchaseOrder}
-            </MenuItem>
-            <MenuItem value={OrderType.ReturnOrder}>
-              {OrderType.ReturnOrder}
-            </MenuItem>
-            <MenuItem value={OrderType.SaleOrder}>
-              {OrderType.SaleOrder}
-            </MenuItem>
-            <MenuItem value={OrderType.Standard}>{OrderType.Standard}</MenuItem>
-            <MenuItem value={OrderType.TransferOrder}>
-              {OrderType.TransferOrder}
-            </MenuItem>
+            {orderTypeList.map((type, index) => (
+              <MenuItem key={index} value={type}>
+                {type}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
         <Button
