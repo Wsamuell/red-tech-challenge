@@ -1,22 +1,22 @@
-import { useState } from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import { SelectChangeEvent, OutlinedInput } from '@mui/material/';
-import { NewOrder, Order, OrderType } from '../Helper/types';
-import CloseIcon from '@mui/icons-material/Close';
 import { addNewOrder } from '../Client';
+import { filterOrderedBySearchAndType } from '../Helper/filterFunctionality';
+import { NewOrder, Order, OrderType } from '../Helper/types';
+import { RootState } from '../Store/store';
+import { SelectChangeEvent, OutlinedInput } from '@mui/material/';
 import { setFilteredOrders, setOrders } from '../Store/Slices/orderSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { RootState } from '../Store/store';
-import { filterOrderedBySearchAndType } from '../Helper/filterFunctionality';
+import { useState } from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import CloseIcon from '@mui/icons-material/Close';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Modal from '@mui/material/Modal';
+import Select from '@mui/material/Select';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 
 interface CreateOrderModalProps {
   open: boolean;
@@ -77,22 +77,22 @@ const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
 
   return (
     <Modal
-      open={open}
-      onClose={onClose}
-      aria-labelledby="modal-title"
       aria-describedby="modal-description"
+      aria-labelledby="modal-title"
+      onClose={onClose}
+      open={open}
     >
       <Box
         sx={{
+          bgcolor: 'background.paper',
+          borderRadius: 1,
+          boxShadow: 24,
+          left: '50%',
+          p: 4,
           position: 'absolute',
           top: '50%',
-          left: '50%',
           transform: 'translate(-50%, -50%)',
           width: 250,
-          bgcolor: 'background.paper',
-          boxShadow: 24,
-          borderRadius: 1,
-          p: 4,
         }}
       >
         <Typography id="modal-title" variant="h6" component="h3" color={'grey'}>
@@ -102,26 +102,26 @@ const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
           <TextField
             label="Full Name"
             name="customerName"
-            value={formData.customerName}
             onChange={handleTextFieldChange}
+            value={formData.customerName}
           />
         </FormControl>
         <FormControl fullWidth sx={{ mt: 2 }}>
           <TextField
             label="Created By"
             name="createdByUserName"
-            value={formData.createdByUserName}
             onChange={handleTextFieldChange}
+            value={formData.createdByUserName}
           />
         </FormControl>
         <FormControl fullWidth sx={{ mt: 2 }}>
           <InputLabel id="order-type-label">Order Type</InputLabel>
           <Select
+            input={<OutlinedInput label="Order Type" />}
             labelId="order-type-label"
             name="order-type-select"
-            value={formData.orderType}
             onChange={handleOrderValuesChange}
-            input={<OutlinedInput label="Order Type" />}
+            value={formData.orderType}
           >
             <MenuItem value={OrderType.PurchaseOrder}>
               {OrderType.PurchaseOrder}
@@ -139,9 +139,9 @@ const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
           </Select>
         </FormControl>
         <Button
-          variant="contained"
           onClick={handleOrderSubmit}
           sx={{ mt: 2 }}
+          variant="contained"
           disabled={
             formData.customerName.trim() === '' ||
             formData.createdByUserName.trim() === '' ||

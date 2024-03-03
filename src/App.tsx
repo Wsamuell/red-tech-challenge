@@ -1,16 +1,16 @@
+import { deleteOrder, fetchAllOrders, updateOrder } from './Client';
+import { Order, OrderType } from './Helper/types';
+import { RootState } from './Store/store';
+import { setOrders, setFilteredOrders } from './Store/Slices/orderSlice';
+import { setSelectedRows } from './Store/Slices/orderSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import DataTable from './Scene/OrderTable';
 import FilterBar from './Scene/FilterBar';
 import Navbar from './Scene/Navbar';
-import { Order, OrderType } from './Helper/types';
-import { deleteOrder, fetchAllOrders, updateOrder } from './Client';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
-import Alert from '@mui/material/Alert';
-import DataTable from './Scene/OrderTable';
-import { setSelectedRows } from './Store/Slices/orderSlice';
-import { setOrders, setFilteredOrders } from './Store/Slices/orderSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from './Store/store';
 
 const App = () => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -45,6 +45,11 @@ const App = () => {
     try {
       await deleteOrder(selectedRows);
       dispatch(
+        setOrders(
+          orders.filter((order) => !selectedRows.includes(order.orderId))
+        )
+      );
+      dispatch(
         setFilteredOrders(
           filteredOrders.filter(
             (order) => !selectedRows.includes(order.orderId)
@@ -75,8 +80,8 @@ const App = () => {
         </Box>
       ) : error ? (
         <Alert
-          severity="error"
           color="error"
+          severity="error"
           sx={{ display: 'flex', justifyContent: 'center' }}
         >
           Error Loading Dashboard, Please contact Engineering!
@@ -84,15 +89,14 @@ const App = () => {
       ) : (
         <div>
           <FilterBar
+            onDeleteSelected={handleOrderDelete}
             ordersId={orders.map((order) => order.orderId)}
             orderTypes={Object.values(OrderType)}
-            onDeleteSelected={handleOrderDelete}
           />
           <DataTable
-            orders={filteredOrders}
-            orderTypes={Object.values(OrderType)}
-            onSelectedRowsChange={handleSelectedRowsChange}
             onSaveChanges={handleSaveChanges}
+            onSelectedRowsChange={handleSelectedRowsChange}
+            orderTypes={Object.values(OrderType)}
           />
         </div>
       )}

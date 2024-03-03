@@ -2,15 +2,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { OrderType } from '../../Helper/types';
 
 interface FilterState {
+  openCreateModal: boolean;
   searchInputID: string;
   selectedTypes: OrderType[];
-  openCreateModal: boolean;
 }
 
 const initialState: FilterState = {
+  openCreateModal: false,
   searchInputID: '',
   selectedTypes: [],
-  openCreateModal: false,
 };
 
 const filterSlice = createSlice({
@@ -29,7 +29,7 @@ const filterSlice = createSlice({
   },
 });
 
-export const { setSearchInputID, setSelectedTypes, setOpenCreateModal } =
+export const { setOpenCreateModal, setSearchInputID, setSelectedTypes } =
   filterSlice.actions;
 
 export default filterSlice.reducer;

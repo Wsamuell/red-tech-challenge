@@ -13,18 +13,21 @@ import {
   GridRowSelectionModel,
 } from '@mui/x-data-grid';
 import { Order, OrderType } from '../Helper/types';
-import EditIcon from '@mui/icons-material/Edit';
-import CheckIcon from '@mui/icons-material/Check';
-import CancelIcon from '@mui/icons-material/Close';
-import StyledBox from '../Components/StyledBox';
 import { useState } from 'react';
+import { RootState } from '../Store/store';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { setFilteredOrders, setOrders } from '../Store/Slices/orderSlice';
+import CancelIcon from '@mui/icons-material/Close';
+import CheckIcon from '@mui/icons-material/Check';
+import EditIcon from '@mui/icons-material/Edit';
+import StyledBox from '../Components/StyledBox';
 import StyledTooltip from '../Components/StyledTooltip';
 
 interface DataTableProps {
-  orders: Order[];
-  orderTypes: OrderType[];
-  onSelectedRowsChange: (selectedRows: string[]) => void;
   onSaveChanges: (updatedRow: Order) => void;
+  onSelectedRowsChange: (selectedRows: string[]) => void;
+  orderTypes: OrderType[];
 }
 
 function renderEditError(props: GridRenderEditCellParams) {
@@ -38,14 +41,16 @@ function renderEditError(props: GridRenderEditCellParams) {
 }
 
 const DataTable = ({
-  orders,
-  orderTypes,
-  onSelectedRowsChange,
   onSaveChanges,
+  onSelectedRowsChange,
+  orderTypes,
 }: DataTableProps) => {
   const getRowId = (row: Order) => row.orderId;
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
-  const [rows, setRows] = useState<Order[]>(orders);
+  const dispatch = useDispatch();
+  const { orders, filteredOrders } = useSelector(
+    (state: RootState) => state.orders
+  );
 
   const handleSelectionChange = (newSelection: GridRowSelectionModel) => {
     const selectedOrderIds = newSelection.map((rowId) => rowId.toString());
@@ -78,7 +83,9 @@ const DataTable = ({
     oldRow: Order
   ): Promise<Order> => {
     try {
-      const existingRow = rows.find((row) => row.orderId === newRow.orderId);
+      const existingRow = filteredOrders.find(
+        (row) => row.orderId === newRow.orderId
+      );
       if (!existingRow) {
         throw new Error('Row not found');
       }
@@ -92,8 +99,19 @@ const DataTable = ({
 
       await onSaveChanges(updatedRow);
 
-      setRows(
-        rows.map((row) => (row.orderId === newRow.orderId ? updatedRow : row))
+      dispatch(
+        setFilteredOrders(
+          filteredOrders.map((row) =>
+            row.orderId === newRow.orderId ? updatedRow : row
+          )
+        )
+      );
+      dispatch(
+        setOrders(
+          orders.map((row) =>
+            row.orderId === newRow.orderId ? updatedRow : row
+          )
+        )
       );
 
       return updatedRow;
@@ -208,7 +226,7 @@ const DataTable = ({
           },
         }}
         getRowId={getRowId}
-        rows={orders}
+        rows={filteredOrders}
         columns={columns}
         editMode="row"
         onRowSelectionModelChange={handleSelectionChange}

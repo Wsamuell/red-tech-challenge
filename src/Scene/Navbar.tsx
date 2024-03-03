@@ -1,14 +1,14 @@
-import { AppBar, Toolbar, Typography, IconButton } from '@mui/material';
-import Box from '@mui/material/Box';
-import SettingsIcon from '@mui/icons-material/Settings';
+import { AppBar, IconButton, Toolbar, Typography } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import BackGroungImg from '../Assets/bg.png';
+import Box from '@mui/material/Box';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 const NavBar = () => {
   return (
     <AppBar
-      position="static"
       color="transparent"
+      position="static"
       style={{
         boxShadow: 'none',
         borderBottom: `2px solid #e0e0e0`,
@@ -17,16 +17,16 @@ const NavBar = () => {
     >
       <Toolbar variant="dense" style={{ paddingLeft: 10, paddingRight: 10 }}>
         <IconButton
-          edge="start"
-          color="inherit"
           aria-label="menu"
+          color="inherit"
+          edge="start"
           sx={{ margin: 0.1 }}
         >
           <img
-            src={BackGroungImg}
             alt="backgroundImg"
-            width="30"
             height="auto"
+            src={BackGroungImg}
+            width="30"
           />
         </IconButton>
         <Typography variant="h6" color="grey" component="div">

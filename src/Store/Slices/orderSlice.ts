@@ -1,15 +1,15 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { Order } from '../../Helper/types';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface OrdersState {
-  orders: Order[];
   filteredOrders: Order[];
+  orders: Order[];
   selectedRows: string[];
 }
 
 const initialState: OrdersState = {
-  orders: [],
   filteredOrders: [],
+  orders: [],
   selectedRows: [],
 };
 
@@ -46,12 +46,12 @@ const ordersSlice = createSlice({
 });
 
 export const {
-  setOrders,
-  setFilteredOrders,
-  setSelectedRows,
   addOrder,
-  updateOrder,
   deleteOrder,
+  setFilteredOrders,
+  setOrders,
+  setSelectedRows,
+  updateOrder,
 } = ordersSlice.actions;
 
 export default ordersSlice.reducer;
