@@ -68,6 +68,7 @@ export const addNewOrder = async (order: NewOrder) => {
         `Failed to fetch data. Status: ${response.status}: ${response.statusText}`
       );
     }
+    return response.json();
   } catch (error: any) {
     throw new Error(`Failed to fetch data: ${error.message}`);
   }

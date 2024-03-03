@@ -82,7 +82,6 @@ const App = () => {
             ordersId={orders.map((order) => order.orderId)}
             orderTypes={Object.values(OrderType)}
             onDeleteSelected={handleOrderDelete}
-            fetchData={fetchData}
           />
           <DataTable
             orders={filteredOrders}

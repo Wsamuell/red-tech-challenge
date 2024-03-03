@@ -25,9 +25,9 @@ import {
 import { RootState } from '../Store/store';
 import { filterOrderedBySearchAndType } from '../Helper/filterFunctionality';
 import { setFilteredOrders } from '../Store/Slices/orderSlice';
+import { setSearchInputID } from '../Store/Slices/filterSlice';
 
 interface FilterBarProps {
-  fetchData: () => Promise<void>;
   onDeleteSelected: () => void;
   ordersId: string[];
   orderTypes: OrderType[];
@@ -45,7 +45,6 @@ const MenuProps = {
 };
 
 const FilterBar = ({
-  fetchData,
   onDeleteSelected,
   ordersId,
   orderTypes,
@@ -78,7 +77,7 @@ const FilterBar = ({
   const handleSearchChange = (event: ChangeEvent<{}>, value: string | null) => {
     const input = value || '';
     // In the event we serch for an order by id, i think it makes the most sense to clearout the Ordertype in case something is in there
-    // dispatch(setSelectedTypes([]));
+    dispatch(setSearchInputID(input));
     dispatch(
       setFilteredOrders(
         filterOrderedBySearchAndType(orders, input, selectedTypes)
@@ -112,7 +111,6 @@ const FilterBar = ({
       <CreateOrderModal
         open={openCreateModal}
         onClose={() => dispatch(setOpenCreateModal(false))}
-        fetchData={fetchData}
       />
       <Button
         variant="contained"

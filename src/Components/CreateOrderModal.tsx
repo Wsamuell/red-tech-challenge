@@ -9,26 +9,31 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { SelectChangeEvent, OutlinedInput } from '@mui/material/';
-import { NewOrder, OrderType } from '../Helper/types';
+import { NewOrder, Order, OrderType } from '../Helper/types';
 import CloseIcon from '@mui/icons-material/Close';
 import { addNewOrder } from '../Client';
+import { setFilteredOrders, setOrders } from '../Store/Slices/orderSlice';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { RootState } from '../Store/store';
+import { filterOrderedBySearchAndType } from '../Helper/filterFunctionality';
 
 interface CreateOrderModalProps {
   open: boolean;
   onClose: () => void;
-  fetchData: () => Promise<void>;
 }
 
-const CreateOrderModal = ({
-  open,
-  onClose,
-  fetchData,
-}: CreateOrderModalProps) => {
+const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
   const [formData, setFormData] = useState<NewOrder>({
     createdByUserName: '',
     customerName: '',
     orderType: '',
   });
+  const dispatch = useDispatch();
+  const { orders } = useSelector((state: RootState) => state.orders);
+  const { selectedTypes, searchInputID } = useSelector(
+    (state: RootState) => state.filter
+  );
 
   const handleOrderValuesChange = (event: SelectChangeEvent<string>) => {
     const { value } = event.target;
@@ -46,13 +51,24 @@ const CreateOrderModal = ({
 
   const handleOrderSubmit = async () => {
     try {
-      await addNewOrder(formData);
+      await addNewOrder(formData).then((data: Order) => {
+        // instead of refetching
+        dispatch(setOrders([...orders, data]));
+        dispatch(
+          setFilteredOrders(
+            filterOrderedBySearchAndType(
+              [...orders, data],
+              searchInputID,
+              selectedTypes
+            )
+          )
+        );
+      });
       setFormData({
         customerName: '',
         createdByUserName: '',
         orderType: '',
       });
-      fetchData(); // Refetch data after adding a new order
       onClose(); // close the modal on completion
     } catch (err) {
       throw new Error(`Couldnt Add Order: ${err}`);
@@ -124,7 +140,6 @@ const CreateOrderModal = ({
         </FormControl>
         <Button
           variant="contained"
-          color="success"
           onClick={handleOrderSubmit}
           sx={{ mt: 2 }}
           disabled={

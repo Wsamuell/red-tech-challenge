@@ -14,7 +14,7 @@ export const orderTypetoString = (orderType: OrderType): String => {
     case OrderType.TransferOrder:
       return 'Transfer';
     case OrderType.ReturnOrder:
-      return 'ReturnOrder';
+      return 'Return';
     case OrderType.SaleOrder:
       return 'Sale';
     case OrderType.Standard:
