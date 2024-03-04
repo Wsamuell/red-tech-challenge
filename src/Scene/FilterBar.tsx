@@ -10,10 +10,13 @@ import {
   Select,
   TextField,
 } from '@mui/material';
-import { OrderType, orderTypeList } from '../Helper/types';
+import { Order, OrderType, orderTypeList } from '../Helper/types';
 import { RootState } from '../Store/store';
 import { SelectChangeEvent } from '@mui/material/Select';
-import { filteredOrdersBySearchAndType } from '../Store/Slices/orderSlice';
+import {
+  filteredOrdersBySearchAndType,
+  setOrders,
+} from '../Store/Slices/orderSlice';
 import { setSearchInputID } from '../Store/Slices/filterSlice';
 import {
   setSelectedTypes,
@@ -23,8 +26,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import AddIcon from '@mui/icons-material/Add';
 import CreateOrderModal from '../Components/CreateOrderModal';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { getOrderByType } from '../Client';
 
 interface FilterBarProps {
+  fetchData: () => void;
   onDeleteSelected: () => void;
   ordersId: string[];
 }
@@ -40,21 +45,40 @@ const MenuProps = {
   },
 };
 
-const FilterBar = ({ onDeleteSelected, ordersId }: FilterBarProps) => {
+const FilterBar = ({
+  fetchData,
+  onDeleteSelected,
+  ordersId,
+}: FilterBarProps) => {
   const dispatch = useDispatch();
   const { openCreateModal, selectedTypes, searchInputID } = useSelector(
     (state: RootState) => state.filter
   );
   const { selectedRows } = useSelector((state: RootState) => state.orders);
-  const handleOrderTypeChange = (event: SelectChangeEvent<string[]>) => {
-    const { value } = event.target;
-    dispatch(setSelectedTypes(value as OrderType[]));
-    dispatch(
-      filteredOrdersBySearchAndType({
-        inputID: searchInputID,
-        types: value as OrderType[],
-      })
-    );
+  // const handleOrderTypeChange = (event: SelectChangeEvent<string[]>) => {
+  //   const { value } = event.target;
+  //   dispatch(setSelectedTypes(value as OrderType[]));
+  //   dispatch(
+  //     filteredOrdersBySearchAndType({
+  //       inputID: searchInputID,
+  //       types: value as OrderType[],
+  //     })
+  //   );
+  // };
+  const handleOrderTypeChange = async (event: SelectChangeEvent<string[]>) => {
+    try {
+      const { value } = event.target;
+      dispatch(setSelectedTypes(value as OrderType[]));
+      if (value === '') {
+        fetchData();
+      } else {
+        await getOrderByType(value as OrderType).then((data: Order[]) => {
+          dispatch(setOrders(data));
+        });
+      }
+    } catch (err) {
+      throw new Error(`${err}`);
+    }
   };
 
   const handleSearchChange = (event: ChangeEvent<{}>, value: string | null) => {

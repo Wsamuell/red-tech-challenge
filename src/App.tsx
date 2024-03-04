@@ -85,6 +85,7 @@ const App = () => {
       ) : (
         <div>
           <FilterBar
+            fetchData={fetchData}
             onDeleteSelected={handleOrderDelete}
             ordersId={orders.map((order) => order.orderId)}
           />

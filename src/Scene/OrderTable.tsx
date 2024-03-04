@@ -83,9 +83,7 @@ const DataTable = ({
     oldRow: Order
   ): Promise<Order> => {
     try {
-      const existingRow = filteredOrders.find(
-        (row) => row.orderId === newRow.orderId
-      );
+      const existingRow = orders.find((row) => row.orderId === newRow.orderId);
       if (!existingRow) {
         throw new Error('Row not found');
       }
@@ -226,7 +224,7 @@ const DataTable = ({
           },
         }}
         getRowId={getRowId}
-        rows={filteredOrders}
+        rows={orders}
         columns={columns}
         editMode="row"
         onRowSelectionModelChange={handleSelectionChange}
