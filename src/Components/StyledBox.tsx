@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles';
 
 const StyledBox = styled('div')(({ theme }) => ({
-  height: 700,
+  height: 600,
   width: '100%',
   '& .MuiDataGrid-cell--editable': {
     '& .MuiInputBase-root': {

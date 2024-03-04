@@ -2,6 +2,7 @@ import { addNewOrder } from '../Client';
 import { NewOrder, Order, orderTypeList } from '../Helper/types';
 import { RootState } from '../Store/store';
 import { SelectChangeEvent, OutlinedInput } from '@mui/material/';
+import { useSnackbar } from 'notistack';
 import { addOrder } from '../Store/Slices/orderSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
@@ -28,6 +29,7 @@ const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
     customerName: '',
     orderType: '',
   });
+  const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const { searchInputID, selectedTypes } = useSelector(
     (state: RootState) => state.filter
@@ -60,7 +62,9 @@ const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
       });
       onClose();
     } catch (err) {
-      throw new Error(`Couldnt Add Order: ${err}`);
+      enqueueSnackbar('Error Creating Order!', { variant: 'error' });
+    } finally {
+      enqueueSnackbar('Sucessfully Created Order!', { variant: 'success' });
     }
   };
 

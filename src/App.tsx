@@ -1,4 +1,5 @@
 import { deleteOrder, fetchAllOrders, updateOrder } from './Client';
+import { SnackbarProvider, useSnackbar } from 'notistack';
 import { Order, orderTypeList } from './Helper/types';
 import { RootState } from './Store/store';
 import {
@@ -21,6 +22,7 @@ import Navbar from './Scene/Navbar';
 
 const App = () => {
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
   const { error, loading, orders, selectedRows } = useSelector(
     (state: RootState) => state.orders
   );
@@ -53,10 +55,13 @@ const App = () => {
       // Delete in both the orders array and filteredArray
       dispatch(setDeleteOrders(selectedRows));
       dispatch(setDeleteFilteredOrders(selectedRows));
-
       dispatch(setSelectedRows([]));
     } catch (err) {
-      throw new Error(`Couldnt Delete Order: ${err}`);
+      enqueueSnackbar('Error Deleting Order!', { variant: 'error' });
+    } finally {
+      enqueueSnackbar('Order Deleted!', {
+        variant: 'info',
+      });
     }
   };
 
@@ -69,7 +74,7 @@ const App = () => {
   };
 
   return (
-    <div className="App">
+    <SnackbarProvider maxSnack={3}>
       <Navbar />
       <FilterBar
         fetchData={fetchData}
@@ -97,7 +102,7 @@ const App = () => {
           />
         </div>
       )}
-    </div>
+    </SnackbarProvider>
   );
 };
 

@@ -23,6 +23,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from '@mui/icons-material/Edit';
 import StyledBox from '../Components/StyledBox';
 import StyledTooltip from '../Components/StyledTooltip';
+import { useSnackbar } from 'notistack';
 
 interface DataTableProps {
   onSaveChanges: (updatedRow: Order) => void;
@@ -46,6 +47,7 @@ const DataTable = ({
   orderTypes,
 }: DataTableProps) => {
   const getRowId = (row: Order) => row.orderId;
+  const { enqueueSnackbar } = useSnackbar();
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const dispatch = useDispatch();
   const { orders, filteredOrders } = useSelector(
@@ -116,8 +118,12 @@ const DataTable = ({
 
       return updatedRow;
     } catch (error) {
-      console.error('Error updating row:', error);
+      enqueueSnackbar('Error Updating Order!', { variant: 'error' });
       return oldRow;
+    } finally {
+      enqueueSnackbar('Order Updated!', {
+        variant: 'success',
+      });
     }
   };
 
