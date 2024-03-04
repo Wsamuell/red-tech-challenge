@@ -3,10 +3,8 @@ import {
   Autocomplete,
   Box,
   Button,
-  Checkbox,
   FormControl,
   InputLabel,
-  ListItemText,
   MenuItem,
   OutlinedInput,
   Select,
@@ -132,7 +130,6 @@ const FilterBar = ({ onDeleteSelected, ordersId }: FilterBarProps) => {
           id="order-type-checkbox"
           input={<OutlinedInput label="Order Type" />}
           labelId="order-type-label"
-          multiple
           onChange={handleOrderTypeChange}
           size="small"
           value={selectedTypes}
@@ -141,10 +138,12 @@ const FilterBar = ({ onDeleteSelected, ordersId }: FilterBarProps) => {
           }
           MenuProps={MenuProps}
         >
+          <MenuItem value="">
+            <em>All</em>
+          </MenuItem>
           {orderTypeList.map((type, index) => (
             <MenuItem key={index} value={type}>
-              <Checkbox checked={selectedTypes.indexOf(type) > -1} />
-              <ListItemText primary={type} />
+              {type}
             </MenuItem>
           ))}
         </Select>
