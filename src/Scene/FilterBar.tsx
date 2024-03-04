@@ -14,7 +14,8 @@ import { Order, OrderType, orderTypeList } from '../Helper/types';
 import { RootState } from '../Store/store';
 import { SelectChangeEvent } from '@mui/material/Select';
 import {
-  filteredOrdersBySearchAndType,
+  filteredOrdersBySearch,
+  setFilteredOrders,
   setOrders,
 } from '../Store/Slices/orderSlice';
 import { setSearchInputID } from '../Store/Slices/filterSlice';
@@ -51,20 +52,11 @@ const FilterBar = ({
   ordersId,
 }: FilterBarProps) => {
   const dispatch = useDispatch();
-  const { openCreateModal, selectedTypes, searchInputID } = useSelector(
+  const { openCreateModal, selectedTypes } = useSelector(
     (state: RootState) => state.filter
   );
   const { selectedRows } = useSelector((state: RootState) => state.orders);
-  // const handleOrderTypeChange = (event: SelectChangeEvent<string[]>) => {
-  //   const { value } = event.target;
-  //   dispatch(setSelectedTypes(value as OrderType[]));
-  //   dispatch(
-  //     filteredOrdersBySearchAndType({
-  //       inputID: searchInputID,
-  //       types: value as OrderType[],
-  //     })
-  //   );
-  // };
+
   const handleOrderTypeChange = async (event: SelectChangeEvent<string[]>) => {
     try {
       const { value } = event.target;
@@ -74,6 +66,7 @@ const FilterBar = ({
       } else {
         await getOrderByType(value as OrderType).then((data: Order[]) => {
           dispatch(setOrders(data));
+          dispatch(setFilteredOrders(data));
         });
       }
     } catch (err) {
@@ -84,9 +77,7 @@ const FilterBar = ({
   const handleSearchChange = (event: ChangeEvent<{}>, value: string | null) => {
     const input = value || '';
     dispatch(setSearchInputID(input));
-    dispatch(
-      filteredOrdersBySearchAndType({ inputID: input, types: selectedTypes })
-    );
+    dispatch(filteredOrdersBySearch(input));
   };
 
   return (

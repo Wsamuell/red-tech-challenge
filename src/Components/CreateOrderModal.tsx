@@ -1,11 +1,8 @@
 import { addNewOrder } from '../Client';
-import { NewOrder, Order, orderTypeList } from '../Helper/types';
+import { NewOrder, Order, OrderType, orderTypeList } from '../Helper/types';
 import { RootState } from '../Store/store';
 import { SelectChangeEvent, OutlinedInput } from '@mui/material/';
-import {
-  addOrder,
-  filteredOrdersBySearchAndType,
-} from '../Store/Slices/orderSlice';
+import { addOrder, filteredOrdersBySearch } from '../Store/Slices/orderSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
@@ -32,7 +29,7 @@ const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
     orderType: '',
   });
   const dispatch = useDispatch();
-  const { selectedTypes, searchInputID } = useSelector(
+  const { searchInputID, selectedTypes } = useSelector(
     (state: RootState) => state.filter
   );
 
@@ -55,13 +52,16 @@ const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
       await addNewOrder(formData).then((data: Order) => {
         // instead of refetching use state
         dispatch(addOrder(data));
-        // also update the filtered list
-        dispatch(
-          filteredOrdersBySearchAndType({
-            inputID: searchInputID,
-            types: selectedTypes,
-          })
+
+        // also update the filtered list if we are currently on that type
+        console.log(
+          formData.orderType,
+          selectedTypes,
+          String(formData.orderType) === String(selectedTypes[0])
         );
+        if (formData.orderType === data.orderType) {
+          dispatch(filteredOrdersBySearch(searchInputID));
+        }
       });
       setFormData({
         customerName: '',

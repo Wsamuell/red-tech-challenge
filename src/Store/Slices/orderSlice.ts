@@ -1,5 +1,5 @@
-import { filterOrdersBySearchAndType } from '../../Helper/filterFunctionality';
-import { Order, OrderType } from '../../Helper/types';
+import { filterSearchOrders } from '../../Helper/filterFunctionality';
+import { Order } from '../../Helper/types';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface OrdersState {
@@ -27,16 +27,8 @@ const ordersSlice = createSlice({
     addOrder: (state, action: PayloadAction<Order>) => {
       state.orders.push(action.payload);
     },
-    filteredOrdersBySearchAndType: (
-      state,
-      action: PayloadAction<{ inputID: string; types: OrderType[] }>
-    ) => {
-      const { inputID, types } = action.payload;
-      state.filteredOrders = filterOrdersBySearchAndType(
-        state.orders,
-        inputID,
-        types
-      );
+    filteredOrdersBySearch: (state, action: PayloadAction<string>) => {
+      state.filteredOrders = filterSearchOrders(state.orders, action.payload);
     },
     updateOrder: (state, action: PayloadAction<Order>) => {
       const index = state.orders.findIndex(
@@ -64,7 +56,7 @@ const ordersSlice = createSlice({
 
 export const {
   addOrder,
-  filteredOrdersBySearchAndType,
+  filteredOrdersBySearch,
   setDeleteFilteredOrders,
   setDeleteOrders,
   setFilteredOrders,
