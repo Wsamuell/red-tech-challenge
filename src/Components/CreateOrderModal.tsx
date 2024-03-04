@@ -1,8 +1,8 @@
 import { addNewOrder } from '../Client';
-import { NewOrder, Order, OrderType, orderTypeList } from '../Helper/types';
+import { NewOrder, Order, orderTypeList } from '../Helper/types';
 import { RootState } from '../Store/store';
 import { SelectChangeEvent, OutlinedInput } from '@mui/material/';
-import { addOrder, filteredOrdersBySearch } from '../Store/Slices/orderSlice';
+import { addOrder } from '../Store/Slices/orderSlice';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
@@ -49,26 +49,16 @@ const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
 
   const handleOrderSubmit = async () => {
     try {
-      await addNewOrder(formData).then((data: Order) => {
+      await addNewOrder(formData).then((order: Order) => {
         // instead of refetching use state
-        dispatch(addOrder(data));
-
-        // also update the filtered list if we are currently on that type
-        console.log(
-          formData.orderType,
-          selectedTypes,
-          String(formData.orderType) === String(selectedTypes[0])
-        );
-        if (formData.orderType === data.orderType) {
-          dispatch(filteredOrdersBySearch(searchInputID));
-        }
+        dispatch(addOrder({ order, searchInputID, selectedTypes }));
       });
       setFormData({
         customerName: '',
         createdByUserName: '',
         orderType: '',
       });
-      onClose(); // close the modal on completion
+      onClose();
     } catch (err) {
       throw new Error(`Couldnt Add Order: ${err}`);
     }
