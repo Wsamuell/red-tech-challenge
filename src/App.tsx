@@ -2,6 +2,8 @@ import { deleteOrder, fetchAllOrders, updateOrder } from './Client';
 import { Order, orderTypeList } from './Helper/types';
 import { RootState } from './Store/store';
 import {
+  setError,
+  setLoading,
   setDeleteOrders,
   setDeleteFilteredOrders,
   setOrders,
@@ -9,7 +11,7 @@ import {
 } from './Store/Slices/orderSlice';
 import { setSelectedRows } from './Store/Slices/orderSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -18,10 +20,8 @@ import FilterBar from './Scene/FilterBar';
 import Navbar from './Scene/Navbar';
 
 const App = () => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
-  const { orders, selectedRows } = useSelector(
+  const { error, loading, orders, selectedRows } = useSelector(
     (state: RootState) => state.orders
   );
 
@@ -31,14 +31,15 @@ const App = () => {
       dispatch(setOrders(response));
       dispatch(setFilteredOrders(response)); // Initially, display all orders
     } catch (error) {
-      setError('Error fetching orders. Please try again later.');
+      dispatch(setError('Error fetching orders. Please try again later.'));
     } finally {
-      setLoading(false);
+      dispatch(setLoading(false));
     }
   };
 
   useEffect(() => {
     fetchData();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -70,6 +71,11 @@ const App = () => {
   return (
     <div className="App">
       <Navbar />
+      <FilterBar
+        fetchData={fetchData}
+        onDeleteSelected={handleOrderDelete}
+        ordersId={orders.map((order) => order.orderId)}
+      />
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <CircularProgress />
@@ -84,11 +90,6 @@ const App = () => {
         </Alert>
       ) : (
         <div>
-          <FilterBar
-            fetchData={fetchData}
-            onDeleteSelected={handleOrderDelete}
-            ordersId={orders.map((order) => order.orderId)}
-          />
           <DataTable
             onSaveChanges={handleSaveChanges}
             onSelectedRowsChange={handleSelectedRowsChange}

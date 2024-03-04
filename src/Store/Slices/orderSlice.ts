@@ -6,13 +6,17 @@ import { Order, OrderType } from '../../Helper/types';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface OrdersState {
+  error: string | null;
   filteredOrders: Order[];
+  loading: boolean;
   orders: Order[];
   selectedRows: string[];
 }
 
 const initialState: OrdersState = {
+  error: null,
   filteredOrders: [],
+  loading: true,
   orders: [],
   selectedRows: [],
 };
@@ -23,6 +27,12 @@ const ordersSlice = createSlice({
   reducers: {
     setOrders: (state, action: PayloadAction<Order[]>) => {
       state.orders = action.payload;
+    },
+    setError: (state, action: PayloadAction<string | null>) => {
+      state.error = action.payload;
+    },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
     },
     setFilteredOrders: (state, action: PayloadAction<Order[]>) => {
       state.filteredOrders = action.payload;
@@ -75,7 +85,9 @@ export const {
   filteredOrdersBySearch,
   setDeleteFilteredOrders,
   setDeleteOrders,
+  setError,
   setFilteredOrders,
+  setLoading,
   setOrders,
   setSelectedRows,
   updateOrder,

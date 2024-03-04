@@ -15,7 +15,9 @@ import { RootState } from '../Store/store';
 import { SelectChangeEvent } from '@mui/material/Select';
 import {
   filteredOrdersBySearch,
+  setError,
   setFilteredOrders,
+  setLoading,
   setOrders,
 } from '../Store/Slices/orderSlice';
 import { setSearchInputID } from '../Store/Slices/filterSlice';
@@ -58,8 +60,9 @@ const FilterBar = ({
   const { selectedRows } = useSelector((state: RootState) => state.orders);
 
   const handleOrderTypeChange = async (event: SelectChangeEvent<string[]>) => {
+    const { value } = event.target;
     try {
-      const { value } = event.target;
+      dispatch(setLoading(true));
       dispatch(setSelectedTypes(value as OrderType[]));
       if (value === '') {
         fetchData();
@@ -70,7 +73,9 @@ const FilterBar = ({
         });
       }
     } catch (err) {
-      throw new Error(`${err}`);
+      dispatch(setError(`Could not load ${value}`));
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 
