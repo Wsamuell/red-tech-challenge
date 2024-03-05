@@ -54,6 +54,7 @@ const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
       await addNewOrder(formData).then((order: Order) => {
         // instead of refetching use state
         dispatch(addOrder({ order, searchInputID, selectedTypes }));
+        enqueueSnackbar('Sucessfully Created Order!', { variant: 'success' });
       });
       setFormData({
         customerName: '',
@@ -63,8 +64,6 @@ const CreateOrderModal = ({ open, onClose }: CreateOrderModalProps) => {
       onClose();
     } catch (err) {
       enqueueSnackbar('Error Creating Order!', { variant: 'error' });
-    } finally {
-      enqueueSnackbar('Sucessfully Created Order!', { variant: 'success' });
     }
   };
 

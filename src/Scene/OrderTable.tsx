@@ -24,9 +24,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import StyledBox from '../Components/StyledBox';
 import StyledTooltip from '../Components/StyledTooltip';
 import { useSnackbar } from 'notistack';
+import { updateOrder } from '../Client';
 
 interface DataTableProps {
-  onSaveChanges: (updatedRow: Order) => void;
   onSelectedRowsChange: (selectedRows: string[]) => void;
   orderTypes: OrderType[];
 }
@@ -41,11 +41,7 @@ function renderEditError(props: GridRenderEditCellParams) {
   );
 }
 
-const DataTable = ({
-  onSaveChanges,
-  onSelectedRowsChange,
-  orderTypes,
-}: DataTableProps) => {
+const DataTable = ({ onSelectedRowsChange, orderTypes }: DataTableProps) => {
   const getRowId = (row: Order) => row.orderId;
   const { enqueueSnackbar } = useSnackbar();
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
@@ -99,31 +95,29 @@ const DataTable = ({
         customerName: newRow.customerName,
       };
 
-      await onSaveChanges(updatedRow);
-
-      dispatch(
-        setFilteredOrders(
-          filteredOrders.map((row) =>
-            row.orderId === newRow.orderId ? updatedRow : row
+      await updateOrder(updatedRow).then((_) => {
+        dispatch(
+          setFilteredOrders(
+            filteredOrders.map((row) =>
+              row.orderId === newRow.orderId ? updatedRow : row
+            )
           )
-        )
-      );
-      dispatch(
-        setOrders(
-          orders.map((row) =>
-            row.orderId === newRow.orderId ? updatedRow : row
+        );
+        dispatch(
+          setOrders(
+            orders.map((row) =>
+              row.orderId === newRow.orderId ? updatedRow : row
+            )
           )
-        )
-      );
-
+        );
+        enqueueSnackbar('Order Updated!', {
+          variant: 'success',
+        });
+      });
       return updatedRow;
     } catch (error) {
       enqueueSnackbar('Error Updating Order!', { variant: 'error' });
       return oldRow;
-    } finally {
-      enqueueSnackbar('Order Updated!', {
-        variant: 'success',
-      });
     }
   };
 

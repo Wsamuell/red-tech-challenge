@@ -15,10 +15,13 @@ import { RootState } from '../Store/store';
 import { SelectChangeEvent } from '@mui/material/Select';
 import {
   filteredOrdersBySearch,
+  setDeleteFilteredOrders,
+  setDeleteOrders,
   setError,
   setFilteredOrders,
   setLoading,
   setOrders,
+  setSelectedRows,
 } from '../Store/Slices/orderSlice';
 import { setSearchInputID } from '../Store/Slices/filterSlice';
 import {
@@ -29,11 +32,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import AddIcon from '@mui/icons-material/Add';
 import CreateOrderModal from '../Components/CreateOrderModal';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { getOrderByType } from '../Client';
+import { deleteOrder, getOrderByType } from '../Client';
+import { useSnackbar } from 'notistack';
 
 interface FilterBarProps {
   fetchData: () => void;
-  onDeleteSelected: () => void;
   ordersId: string[];
 }
 
@@ -48,12 +51,9 @@ const MenuProps = {
   },
 };
 
-const FilterBar = ({
-  fetchData,
-  onDeleteSelected,
-  ordersId,
-}: FilterBarProps) => {
+const FilterBar = ({ fetchData, ordersId }: FilterBarProps) => {
   const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
   const { openCreateModal, selectedTypes } = useSelector(
     (state: RootState) => state.filter
   );
@@ -83,6 +83,32 @@ const FilterBar = ({
     const input = value || '';
     dispatch(setSearchInputID(input));
     dispatch(filteredOrdersBySearch(input));
+  };
+
+  const handleOrderDelete = async () => {
+    try {
+      await deleteOrder(selectedRows).then((_) => {
+        enqueueSnackbar(
+          `${selectedRows.length} Order${
+            selectedRows.length > 1 ? 's' : ''
+          } Deleted`,
+          {
+            variant: 'info',
+          }
+        );
+      });
+      // Delete in both the orders array and filteredArray
+      dispatch(setDeleteOrders(selectedRows));
+      dispatch(setDeleteFilteredOrders(selectedRows));
+      dispatch(setSelectedRows([]));
+    } catch (err) {
+      enqueueSnackbar(
+        `Error Deleting ${selectedRows.length} Order${
+          selectedRows.length > 1 ? 's' : ''
+        }`,
+        { variant: 'error' }
+      );
+    }
   };
 
   return (
@@ -128,7 +154,7 @@ const FilterBar = ({
       </Button>
       <Button
         color="error"
-        onClick={onDeleteSelected}
+        onClick={handleOrderDelete}
         variant="contained"
         style={{
           width: 200,

@@ -1,12 +1,10 @@
-import { deleteOrder, fetchAllOrders, updateOrder } from './Client';
-import { SnackbarProvider, useSnackbar } from 'notistack';
-import { Order, orderTypeList } from './Helper/types';
+import { fetchAllOrders } from './Client';
+import { SnackbarProvider } from 'notistack';
+import { orderTypeList } from './Helper/types';
 import { RootState } from './Store/store';
 import {
   setError,
   setLoading,
-  setDeleteOrders,
-  setDeleteFilteredOrders,
   setOrders,
   setFilteredOrders,
 } from './Store/Slices/orderSlice';
@@ -22,8 +20,7 @@ import Navbar from './Scene/Navbar';
 
 const App = () => {
   const dispatch = useDispatch();
-  const { enqueueSnackbar } = useSnackbar();
-  const { error, loading, orders, selectedRows } = useSelector(
+  const { error, loading, orders } = useSelector(
     (state: RootState) => state.orders
   );
 
@@ -49,36 +46,11 @@ const App = () => {
     dispatch(setSelectedRows(newSelectedRows));
   };
 
-  const handleOrderDelete = async () => {
-    try {
-      await deleteOrder(selectedRows);
-      // Delete in both the orders array and filteredArray
-      dispatch(setDeleteOrders(selectedRows));
-      dispatch(setDeleteFilteredOrders(selectedRows));
-      dispatch(setSelectedRows([]));
-    } catch (err) {
-      enqueueSnackbar('Error Deleting Order!', { variant: 'error' });
-    } finally {
-      enqueueSnackbar('Order Deleted!', {
-        variant: 'info',
-      });
-    }
-  };
-
-  const handleSaveChanges = async (updatedRow: Order) => {
-    try {
-      await updateOrder(updatedRow);
-    } catch (err) {
-      setError(`Could not save changes: ${err}`);
-    }
-  };
-
   return (
     <SnackbarProvider maxSnack={3}>
       <Navbar />
       <FilterBar
         fetchData={fetchData}
-        onDeleteSelected={handleOrderDelete}
         ordersId={orders.map((order) => order.orderId)}
       />
       {loading ? (
@@ -96,7 +68,6 @@ const App = () => {
       ) : (
         <div>
           <DataTable
-            onSaveChanges={handleSaveChanges}
             onSelectedRowsChange={handleSelectedRowsChange}
             orderTypes={orderTypeList}
           />
